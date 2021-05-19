@@ -19,6 +19,7 @@
             <strong>사용자: <%= session.getAttribute("userid") %> </strong>
         </span> <br> <br>
         
-        <a href="main_menu.jsp"> 이전 메뉴로 </a>
+        <p><a href="reply_mail.jsp"> 답장 쓰기 </a></p>
+        <p><a href="main_menu.jsp"> 이전 메뉴로 </a></p>
     </body>
 </html>

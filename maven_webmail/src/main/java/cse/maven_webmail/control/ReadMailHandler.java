@@ -22,7 +22,7 @@ import cse.maven_webmail.model.Pop3Agent;
  * @author jongmin
  */
 public class ReadMailHandler extends HttpServlet {
-
+    private final String characterEncodingSet = "UTF-8";
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
@@ -34,7 +34,7 @@ public class ReadMailHandler extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 
-        request.setCharacterEncoding("UTF-8");
+        request.setCharacterEncoding(characterEncodingSet);
         int select = Integer.parseInt((String) request.getParameter("menu"));
 
         switch (select) {
