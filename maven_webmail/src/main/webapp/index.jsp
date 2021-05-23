@@ -39,6 +39,12 @@
                 <input type="submit" value="로그인" name="B1">&nbsp;&nbsp;&nbsp;
                 <input type="reset" value="다시 입력" name="B2">
             </form>
+                <br />
+                <div>
+                <form action ="register.jsp" method="post" >
+                <input type ="submit" value ="회원가입" name ="regist">
+              </form>
+                </div>
         </div>
 
 
