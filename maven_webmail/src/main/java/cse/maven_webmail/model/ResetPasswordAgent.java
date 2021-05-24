@@ -6,38 +6,28 @@
 package cse.maven_webmail.model;
 
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  *
  * @author chung
  */
 public class ResetPasswordAgent extends UserAdminAgent {
-    private String server;
-    private int port;
     private Socket socket = null;
     private InputStream is = null;
     private OutputStream os = null;
     private boolean isConnected = false;
-    private final String EOL = "\r\n";
+    private static final String EOL = "\r\n";
+    Log log = null;
     
     public ResetPasswordAgent(String server, int port, String cwd) throws Exception{
         super(server, port, cwd);
-        System.out.println("ResetPasswordAgent create: server= " + server + ", port= " + port);
-//        this.server = server;
-//        this.port = port;
-//        this.cwd = cwd;
-//        this.ROOT_ID = super.getROOT_ID();
-//        this.ROOT_PASSWORD = super.getROOT_PASSWORD();
-//        this.ADMIN_ID = super.getADMIN_ID();
+        log = LogFactory.getLog(ResetPasswordAgent.class);
+        log.info("ResetPasswordAgent create: server= " + server + ", port= " + port);
         isConnected = super.isIsConnected();
         socket = super.getSocket();
         is = socket.getInputStream();
@@ -49,22 +39,24 @@ public class ResetPasswordAgent extends UserAdminAgent {
         boolean status = false;
         byte[] messageBuffer = new byte[1024];
         
-        System.out.println("resetPasswd() called");
+        log.info("resetPasswd() called");
         if(!isConnected){
             return status;
         }
         
         try{
             // 1: "setpassword" command
-            String setPasswordCommand = "setpassword" + userId + " " + passwd + EOL;
+            String setPasswordCommand = "setpassword " + userId + " " + passwd + EOL;
             os.write(setPasswordCommand.getBytes());
             
             // 2: response for "setpassword" command
             java.util.Arrays.fill(messageBuffer, (byte) 0);
             
-            is.read(messageBuffer);
-            String recvMessage = new String(messageBuffer);
-            System.out.println(recvMessage);
+            String recvMessage = "";
+            if(is.read(messageBuffer) > 0){
+                recvMessage = new String(messageBuffer);
+                log.info(recvMessage);
+            }
             
             if(recvMessage.contains("Password for " + userId + " reset")){
                 status = true;
@@ -73,13 +65,11 @@ public class ResetPasswordAgent extends UserAdminAgent {
             }
             
             quit();
-            System.out.flush();
             socket.close();
         } catch (Exception ex){
-            System.out.println(ex.toString());
+            log.error(ex);
             status = false;
-        } finally {
-            return status;
         }
+        return status;
     }
 }
