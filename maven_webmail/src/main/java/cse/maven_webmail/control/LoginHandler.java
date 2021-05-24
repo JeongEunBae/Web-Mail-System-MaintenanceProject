@@ -16,7 +16,7 @@ import cse.maven_webmail.model.Pop3Agent;
 
 /**
  *
- * @author jongmin
+ * @author jongmin, cheongil
  */
 public class LoginHandler extends HttpServlet {
 
