@@ -34,13 +34,18 @@ public class MessageFormatter {
                 + " <th> 삭제 </td>   "
                 + " </tr>");
 
+        int sendToOtherMail = messages.length - 1; // ADD JEONGEUN
         for (int i = messages.length - 1; i >= 0; i--) {
             MessageParser parser = new MessageParser(messages[i], userid);
             parser.parse(false);  // envelope 정보만 필요
+            
+            if(parser.getFromAddress().equals(userid)) continue; // ADD JEONGEUN
+            else sendToOtherMail--; // ADD JEONGEUN
+            
             // 메시지 헤더 포맷
             // 추출한 정보를 출력 포맷 사용하여 스트링으로 만들기
             buffer.append("<tr> "
-                    + " <td id=no>" + (i + 1) + " </td> "
+                    + " <td id=no>" + (sendToOtherMail) + " </td> "
                     + " <td id=sender>" + parser.getFromAddress() + "</td>"
                     + " <td id=subject> "
                     + " <a href=show_message.jsp?msgid=" + (i + 1) + " title=\"메일 보기\"> "
@@ -57,7 +62,48 @@ public class MessageFormatter {
         return buffer.toString();
 //        return "MessageFormatter 테이블 결과";
     }
+    
+    public String getMessageToMeTable(Message[] messages) { // ADD JEONGEUN
+        StringBuilder buffer = new StringBuilder();
 
+        // 메시지 제목 보여주기
+        buffer.append("<table>");  // table start
+        buffer.append("<tr> "
+                + " <th> No. </td> "
+                + " <th> 제목 </td>     "
+                + " <th> 보낸 날짜 </td>   "
+                + " <th> 삭제 </td>   "
+                + " </tr>");
+        
+        int sendToMeMail = messages.length - 1;
+        for (int i = messages.length - 1; i >= 0; i--) {
+   
+            MessageParser parser = new MessageParser(messages[i], userid);
+            parser.parse(false);  // envelope 정보만 필요
+            
+            if(!parser.getFromAddress().equals(userid)) continue;
+            else sendToMeMail--;
+            
+            // 메시지 헤더 포맷
+            // 추출한 정보를 출력 포맷 사용하여 스트링으로 만들기
+            buffer.append("<tr> "
+                    + " <td id=no>" + (sendToMeMail + 1) + " </td> "
+                    + " <td id=subject> "
+                    + " <a href=show_message.jsp?msgid=" + (i + 1) + " title=\"메일 보기\"> "
+                    + parser.getSubject() + "</a> </td>"
+                    + " <td id=date>" + parser.getSentDate() + "</td>"
+                    + " <td id=delete>"
+                    + "<a href=ReadMail.do?menu="
+                    + CommandType.DELETE_MAIL_COMMAND
+                    + "&msgid=" + (i + 1) + "> 삭제 </a>" + "</td>"
+                    + " </tr>");
+        }
+        buffer.append("</table>");
+
+        return buffer.toString();
+//        return "MessageFormatter 테이블 결과";
+    }
+    
     public String getMessage(Message message) {
         StringBuilder buffer = new StringBuilder();
 

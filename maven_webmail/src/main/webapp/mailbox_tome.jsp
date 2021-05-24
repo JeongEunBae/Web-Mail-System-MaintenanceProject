@@ -30,7 +30,7 @@
         </div>
 
         <div id="main">
-            <%= pop3.getMessageList() %>
+            <%= pop3.getMessageToMeList() %>
         </div>
 
         <jsp:include page="footer.jsp" />
