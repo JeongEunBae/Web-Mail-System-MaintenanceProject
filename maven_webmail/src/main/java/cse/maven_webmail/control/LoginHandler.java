@@ -12,6 +12,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import cse.maven_webmail.model.Pop3Agent;
 
 /**
@@ -27,7 +30,9 @@ public class LoginHandler extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    private final String ADMINISTRATOR = "admin";
+    private static final String ADMINISTRATOR = "admin";
+    private static final String USERID = "userid";
+    private static final String PASSWD = "passwd";
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -36,49 +41,55 @@ public class LoginHandler extends HttpServlet {
         HttpSession session = request.getSession();
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        int selected_menu = Integer.parseInt((String) request.getParameter("menu"));
-
+        int selectedMenu = Integer.parseInt((String) request.getParameter("menu"));
+        String host;
+        String userid;
+        String password;
 
         try {
-            switch (selected_menu) {
+            switch (selectedMenu) {
                 case CommandType.LOGIN:
-                    String host = (String) request.getSession().getAttribute("host");
-                    String userid = request.getParameter("userid");
-                    String password = request.getParameter("passwd");
+                    host = (String) request.getSession().getAttribute("host");
+                    userid = request.getParameter(USERID);
+                    password = request.getParameter(PASSWD);
 
                     // Check the login information is valid using <<model>>Pop3Agent.
                     Pop3Agent pop3Agent = new Pop3Agent(host, userid, password);
                     boolean isLoginSuccess = pop3Agent.validate();
-
+                    
                     // Now call the correct page according to its validation result.
                     if (isLoginSuccess) {
                         if (isAdmin(userid)) {
                             // HttpSession 객체에 userid를 등록해 둔다.
-                            session.setAttribute("userid", userid);
+                            session.setAttribute(USERID, userid);
                             response.sendRedirect("admin_menu.jsp");
                         } else {
                             // HttpSession 객체에 userid와 password를 등록해 둔다.
-                            session.setAttribute("userid", userid);
-                            session.setAttribute("password", password);
+                            session.setAttribute(USERID, userid);
+                            session.setAttribute(PASSWD, password);
                             response.sendRedirect("main_menu.jsp");
                         }
                     } else {
                         RequestDispatcher view = request.getRequestDispatcher("login_fail.jsp");
                         view.forward(request, response);
-//                        response.sendRedirect("login_fail.jsp");
                     }
                     break;
                 case CommandType.LOGOUT:
                     out = response.getWriter();
                     session.invalidate();
-//                    response.sendRedirect(homeDirectory);
                     response.sendRedirect(getServletContext().getInitParameter("HomeDirectory"));
+                    break;
+                case CommandType.RESET_PASSWORD:
+                    host = (String) request.getSession().getAttribute("host");
+                    userid = request.getParameter(USERID);
+                    password = request.getParameter(PASSWD);
                     break;
                 default:
                     break;
             }
         } catch (Exception ex) {
-            System.err.println("LoginCheck - LOGIN error : " + ex);
+            Log log = LogFactory.getLog(LoginHandler.class);
+            log.error("LoginCheck - LOGIN error: " + ex);
         } finally {
             out.close();
         }
@@ -87,12 +98,14 @@ public class LoginHandler extends HttpServlet {
     protected boolean isAdmin(String userid) {
         boolean status = false;
 
-        if (userid.equals(this.ADMINISTRATOR)) {
+        if (userid.equals(ADMINISTRATOR)) {
             status = true;
         }
 
         return status;
     }
+    
+    
 // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
 
     /**
