@@ -14,6 +14,7 @@ import javax.mail.Session;
 import javax.mail.Store;
 import javax.servlet.http.HttpServletRequest;
 
+
 /**
  *
  * @author jongmin
@@ -57,6 +58,14 @@ public class Pop3Agent {
             return status;
         }
 
+        
+        // DB랑 연동해서 임시 삭제된 메시지 리스트를 가져옴
+        // TODO
+        
+        // 가져온 임시 삭제된 메시지 리스트의 msgid-1 번째 있는 메시지가 삭제할 msgid.
+        // TODO
+        int realMsgid = msgid;
+        
         try {
             // Folder 설정
 //            Folder folder = store.getDefaultFolder();
@@ -64,7 +73,7 @@ public class Pop3Agent {
             folder.open(Folder.READ_WRITE);
 
             // Message에 DELETED flag 설정
-            Message msg = folder.getMessage(msgid);
+            Message msg = folder.getMessage(realMsgid);
             msg.setFlag(Flags.Flag.DELETED, really_delete);
 
             // 폴더에서 메시지 삭제
@@ -78,6 +87,34 @@ public class Pop3Agent {
         } finally {
             return status;
         }
+    }
+    
+    public boolean deleteMessageFake(int msgid){
+        boolean status = false;
+        
+        if (!connectToStore()) {
+            return status;
+        }
+        
+        if (!connectToDB()){
+            return status;
+        }
+        
+        // DB랑 연동해서 임시 삭제된 메시지 리스트를 가져옴
+        // TODO
+        int[] messageList = null;
+        int messageCount = 0;
+        
+        // 가져온 메시지의 개수가 30개면 가장 앞 번호의 메시지 영구 삭제.
+        // TODO
+        if(messageCount == 30){
+            deleteMessage(messageList[0], true);
+            // 리스트에서 삭제된 메시지번호 지우기 
+        }
+        // 가져온 메시지 리스트에 msgid를 새로 추가하고 DB에 등록
+        // TODO
+        
+        return status;
     }
 
     /*
@@ -103,10 +140,10 @@ public class Pop3Agent {
             // From, To, Cc, Bcc, ReplyTo, Subject & Date
             fp.add(FetchProfile.Item.ENVELOPE);
             folder.fetch(messages, fp);
-
+                        
             MessageFormatter formatter = new MessageFormatter(userid);  //3.5
             result = formatter.getMessageTable(messages);   // 3.6
-
+            
             folder.close(true);  // 3.7
             store.close();       // 3.8
         } catch (Exception ex) {
@@ -144,6 +181,38 @@ public class Pop3Agent {
             return result;
         }
     }
+    
+    public String getTrashMessageList(){
+        String result = "POP3  서버 연결이 되지 않아 메시지를 볼 수 없습니다.";
+        int[] numList = {1, 3};     //DB로 가져온 임시로 삭제된 메일번호 목록
+        int numListCount = 2;       //임시로 삭제된 메일번호 목록의 개수
+        
+        if (!connectToStore()) {
+            System.err.println("POP3 connection failed!");
+            return result;
+        }
+        
+        Message[] messages = new Message[numListCount];
+        
+        try{
+            Folder folder = store.getFolder("INBOX");
+            folder.open(Folder.READ_ONLY);
+
+            for(int i=0; i<numListCount; i++){
+                messages[i] = folder.getMessage(numList[i]);
+            }
+
+            MessageFormatter formatter = new MessageFormatter(userid);  //3.5
+            result = formatter.getTempMessageTable(messages);   // 3.6
+            
+            folder.close(true);  // 3.7
+            store.close();       // 3.8
+        } catch(Exception ex){
+            System.out.println("Pop3Agent.getTrashMessageList() : exception = " + ex);
+            result = "Pop3Agent.getTrashMessageList() : exception = " + ex;
+        }
+        return result;
+    }
 
     private boolean connectToStore() {
         boolean status = false;
@@ -166,6 +235,12 @@ public class Pop3Agent {
         } finally {
             return status;
         }
+    }
+    
+    private boolean connectToDB(){
+        boolean status = false;
+        //TODO
+        return status;
     }
 
     public String getHost() {
