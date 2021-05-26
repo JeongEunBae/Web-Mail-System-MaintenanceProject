@@ -72,8 +72,7 @@ public class UserAdminHandler extends HttpServlet {
             out.println("userid = " + userid + "<br>");
             out.println("password = " + password + "<br>");
             out.flush();
-            // if (addUser successful)  사용자 등록 성공 팦업창
-            // else 사용자 등록 실패 팝업창
+            
             if (agent.addUser(userid, password)) {
                 out.println(getUserRegistrationSuccessPopUp());
             } else {

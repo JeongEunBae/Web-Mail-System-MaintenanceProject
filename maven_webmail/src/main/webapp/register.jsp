@@ -16,24 +16,28 @@
         <jsp:include page="header.jsp" />
        
         <div>
-            <center>
-                 <div>회원가입 정보 </div><br/>
-            <form>
-            아이디 :  <input type="text" name="register_id" size="20"> <br /><br />
-                비밀번호:  <input type="password" id="register_pw" onchange="check_pw()" size="20"><br /><br />
-                비밀번호 확인 :  <input type="password" id="register_pw_check" onchange="check_pw()" size="20"> <br />
+              <center>
+             <div>회원가입 정보 </div><br/>
+             </center>
+                 <form action="register.do" method="POST"> 
+                     <center>
+                아이디 :  <input type="text" name="register_id" size="20"> <br /><br />
+                비밀번호:  <input type="password" name= "register_pw" id="register_pw" onchange="check_pw()" size="20"><br /><br />
+                비밀번호 확인 :  <input type="password" name="register_pw_check" id="register_pw_check" onchange="check_pw()" size="20"> <br />
                 <span id="check"></span> <br/><br/>
                 이름: <input type="text" name="register_name" size="10"> <br /><br />
                 전화번호 :  <input type="tel" name="register_number" size="10"> <br /><br />
-                 <div>
               <input type="submit" value="확인" name ="register_ok">
               <input type="reset" value="다시 입력" name="reset_1">
+                </center>
+                 </form>
+
         </div>
             </center>
         </div>
-            </form>
+            </form
     
-                 <-<!-- 비밀번호 중복 여부 체크. 백앤드로 넘기지 않고 JSP페이지 내부에서 체크 -->             
+                 <!-- 비밀번호 중복 여부 체크-->             
     <script>
         function check_pw(){
 
