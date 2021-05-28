@@ -13,6 +13,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 @WebServlet(name = "registerHandler", urlPatterns = {"/register.do"})
 
@@ -32,7 +34,7 @@ public class registerHandler extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         
-        try  {
+        try  (PrintWriter out = response.getWriter()){
             String server = "127.0.0.1";
             int port = 4555; 
             
@@ -46,7 +48,8 @@ public class registerHandler extends HttpServlet {
             }
 
         } catch (Exception ex) {
-            System.out.println("시스템 접속에 실패했습니다.");
+            Log log = LogFactory.getLog(UserAdminHandler.class); 
+            log.error("시스템 접속에 실패했습니다.");
         }
     }
 

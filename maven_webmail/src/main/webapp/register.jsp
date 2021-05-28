@@ -21,7 +21,7 @@
              </center>
                  <form action="register.do" method="POST"> 
                      <center>
-                아이디 :  <input type="text" name="register_id" size="20"> <br /><br />
+                아이디 :  <input type="text" name="register_id" size="20"> <br /><br />     
                 비밀번호:  <input type="password" name= "register_pw" id="register_pw" onchange="check_pw()" size="20"><br /><br />
                 비밀번호 확인 :  <input type="password" name="register_pw_check" id="register_pw_check" onchange="check_pw()" size="20"> <br />
                 <span id="check"></span> <br/><br/>
@@ -29,13 +29,13 @@
                 전화번호 :  <input type="tel" name="register_number" size="10"> <br /><br />
               <input type="submit" value="확인" name ="register_ok">
               <input type="reset" value="다시 입력" name="reset_1">
-                </center>
-                 </form>
-
-        </div>
-            </center>
-        </div>
-            </form
+                 </center>
+      
+            </form>
+    <form action = "IdCheck.do" methorn = "POST"> 아이디 :  <input type="text" name="register_id2" size="20"> <input type="Button" name="idcheck" value="id중복확인">  </form>
+       
+</div>
+            
     
                  <!-- 비밀번호 중복 여부 체크-->             
     <script>
