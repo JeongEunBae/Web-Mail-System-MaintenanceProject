@@ -18,7 +18,11 @@ import cse.maven_webmail.model.SmtpAgent;
  *
  * @author jongmin
  */
-public class WriteMailHandler extends HttpServlet {
+
+// 메일 전송에 필요한 준비만 하는 클래스
+
+public class WriteMailHandler extends HttpServlet 
+{
 
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -28,18 +32,26 @@ public class WriteMailHandler extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException 
+    {
+        boolean status;
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = null;
-
-        try {
+        try
+        {
             request.setCharacterEncoding("UTF-8");
             int select = Integer.parseInt((String) request.getParameter("menu"));
-
-            switch (select) {
-                case CommandType.SEND_MAIL_COMMAND: // 실제 메일 전송하기
+            switch (select)
+            {
+                case CommandType.SEND_MAIL_COMMAND: // 상대방에게 전송
                     out = response.getWriter();
-                    boolean status = sendMessage(request);
+                    status = sendMessage(request);
+                    out.print(getMailTransportPopUp(status));
+                    break;
+                    
+                case CommandType.SEND_MAIL_COMMAND_ME: // 내게 전송
+                    out = response.getWriter();
+                    status = sendMessageMe(request);
                     out.print(getMailTransportPopUp(status));
                     break;
 
@@ -48,18 +60,24 @@ public class WriteMailHandler extends HttpServlet {
                     out.println("없는 메뉴를 선택하셨습니다. 어떻게 이 곳에 들어오셨나요?");
                     break;
             }
-        } catch (Exception ex) {
-            out.println(ex.toString());
-        } finally {
-            out.close();
+        }
+        catch (Exception ex)
+        {
+            if(out != null)
+                out.println(ex.toString());
+        } finally
+        {
+            if(out != null)
+                out.close();
         }
     }
 
-    private boolean sendMessage(HttpServletRequest request) {
+    private boolean sendMessage(HttpServletRequest request)
+    {
         boolean status = false;
 
         // 1. toAddress, ccAddress, subject, body, file1 정보를 파싱하여 추출
-        FormParser parser = new FormParser(request);
+        FormParser parser = new FormParser(request);              
         parser.parse();
 
         // 2.  request 객체에서 HttpSession 객체 얻기
@@ -77,26 +95,65 @@ public class WriteMailHandler extends HttpServlet {
         agent.setBody(parser.getBody());
         String fileName = parser.getFileName();
         System.out.println("WriteMailHandler.sendMessage() : fileName = " + fileName);
-        if (fileName != null) {
+        if (fileName != null)
+        {
             agent.setFile1(fileName);
         }
-
         // 5. 메일 전송 권한 위임
-        if (agent.sendMessage()) {
+        
+        if (agent.sendMessage()) 
+        {
+            status = true;
+        } 
+        
+        return status;
+    }  // sendMessage()
+    
+    private boolean sendMessageMe(HttpServletRequest request)
+    {
+        boolean status = false;
+
+        // 1. ccAddress, subject, body, file1 정보를 파싱하여 추출
+        FormParser parser2 = new FormParser(request);              // 내게 메일 쓰기에는 to 정보가 없기 때문에 수정 필요함
+        parser2.parse();
+        HttpSession session = (HttpSession) request.getSession();
+        String host = (String) session.getAttribute("host");
+        String userid = (String) session.getAttribute("userid");
+        
+        SmtpAgent agent2 = new SmtpAgent(host, userid);
+        agent2.setCc(parser2.getCcAddress());
+        agent2.setSubj(parser2.getSubject());
+        agent2.setBody(parser2.getBody());
+        String fileName = parser2.getFileName();
+        System.out.println("WriteMailHandler.sendMessage() : fileName = " + fileName);
+        if (fileName != null)
+        {
+            agent2.setFile1(fileName);
+        }
+        // 5. 메일 전송 권한 위임
+
+        if (agent2.sendMessageMe()) 
+        {
             status = true;
         }
+        
         return status;
     }  // sendMessage()
 
-    private String getMailTransportPopUp(boolean success) {
+    private String getMailTransportPopUp(boolean success)
+    {
         String alertMessage = null;
-        if (success) {
-            alertMessage = "메일 전송이 성공했습니다.";
-        } else {
-            alertMessage = "메일 전송이 실패했습니다.";
+        if (success)
+        {
+            alertMessage = "메일 전송 성공했습니다.";
         }
-
+        else 
+        {
+            alertMessage = "메일 전송 실패했습니다.";
+        }
+        
         StringBuilder successPopUp = new StringBuilder();
+        
         successPopUp.append("<html>");
         successPopUp.append("<head>");
 
