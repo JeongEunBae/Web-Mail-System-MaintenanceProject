@@ -23,6 +23,8 @@ import cse.maven_webmail.model.Pop3Agent;
  */
 public class ReadMailHandler extends HttpServlet {
     private static final String CHARACTER_ENCODING_SET = "UTF-8"; // ADD JEONGEUN
+
+    private static Logger log = Logger.getLogger(LoggingServlet.class);  // ADD JEONGEUN
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
@@ -70,8 +72,8 @@ public class ReadMailHandler extends HttpServlet {
             request.setCharacterEncoding(CHARACTER_ENCODING_SET); // ADD JEONGEUN
             // LJM 041203 - 아래와 같이 해서 한글파일명 제대로 인식되는 것 확인했음.
             String fileName = request.getParameter("filename");
-            System.out.println(">>>>>> DOWNLOAD: file name = " + fileName);
-            //Logger(">>>>>> DOWNLOAD: file name = " + fileName); // ADD JEONGEUN
+//            System.out.println(">>>>>> DOWNLOAD: file name = " + fileName);
+            log.info(">>>>>> DOWNLOAD: file name = " + fileName); // ADD JEONGEUN
 
             String userid = request.getParameter("userid");
             //String fileName = URLDecoder.decode(request.getParameter("filename"), "utf-8");
@@ -108,8 +110,8 @@ public class ReadMailHandler extends HttpServlet {
             sos.flush();
             sos.close();
         } catch (Exception ex) {
-            System.out.println("====== DOWNLOAD exception : " + ex);
-            //logger.log("====== DOWNLOAD exception : " + ex); // ADD JEONGEUN
+//            System.out.println("====== DOWNLOAD exception : " + ex);
+            log.info("====== DOWNLOAD exception : " + ex); // ADD JEONGEUN
         }
     }
 
