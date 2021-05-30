@@ -36,7 +36,6 @@ public class ReadMailHandler extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         
-        //request.setCharacterEncoding("UTF-8");
         request.setCharacterEncoding(CHARACTER_ENCODING_SET); // ADD JEONGEUN
         int select = Integer.parseInt((String) request.getParameter("menu"));
 
@@ -61,22 +60,19 @@ public class ReadMailHandler extends HttpServlet {
         }
     }
 
-    private void download(HttpServletRequest request, HttpServletResponse response) { //throws IOException {
+    private void download(HttpServletRequest request, HttpServletResponse response) {
         response.setContentType("application/octet-stream");
 
         ServletOutputStream sos = null;
 
         try {
             /* TODO output your page here */
-            //request.setCharacterEncoding("UTF-8");
             request.setCharacterEncoding(CHARACTER_ENCODING_SET); // ADD JEONGEUN
             // LJM 041203 - 아래와 같이 해서 한글파일명 제대로 인식되는 것 확인했음.
             String fileName = request.getParameter("filename");
-//            System.out.println(">>>>>> DOWNLOAD: file name = " + fileName);
             log.info(">>>>>> DOWNLOAD: file name = " + fileName); // ADD JEONGEUN
 
             String userid = request.getParameter("userid");
-            //String fileName = URLDecoder.decode(request.getParameter("filename"), "utf-8");
 
             // download할 파일 읽기
 
@@ -90,9 +86,6 @@ public class ReadMailHandler extends HttpServlet {
                     f.mkdir();
                 }
             }
-
-//            response.setHeader("Content-Disposition", "attachment; filename="
-//                    + URLEncoder.encode(fileName, "UTF-8") + ";"); 
 
             response.setHeader("Content-Disposition", "attachment; filename="
                     + URLEncoder.encode(fileName, CHARACTER_ENCODING_SET) + ";"); // ADD JEONGEUN
@@ -110,7 +103,6 @@ public class ReadMailHandler extends HttpServlet {
             sos.flush();
             sos.close();
         } catch (Exception ex) {
-//            System.out.println("====== DOWNLOAD exception : " + ex);
             log.info("====== DOWNLOAD exception : " + ex); // ADD JEONGEUN
         }
     }
