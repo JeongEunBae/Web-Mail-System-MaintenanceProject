@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import cse.maven_webmail.model.Pop3Agent;
+import java.util.logging.Logger;
 
 /**
  *
@@ -24,7 +25,7 @@ import cse.maven_webmail.model.Pop3Agent;
 public class ReadMailHandler extends HttpServlet {
     private static final String CHARACTER_ENCODING_SET = "UTF-8"; // ADD JEONGEUN
 
-    private static Logger log = Logger.getLogger(LoggingServlet.class);  // ADD JEONGEUN
+    private static final Logger log = Logger.getGlobal();  // ADD JEONGEUN
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
@@ -119,8 +120,7 @@ public class ReadMailHandler extends HttpServlet {
         boolean status = pop3.deleteMessage(msgid, true);
         return status;
     }
-
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+  // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /** 
      * Handles the HTTP <code>GET</code> method.
      * @param request servlet request

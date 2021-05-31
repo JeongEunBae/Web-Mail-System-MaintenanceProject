@@ -32,7 +32,10 @@
             <% pop3.setRequest(request); %>
             <%= pop3.getMessage(Integer.parseInt((String) request.getParameter("msgid")))%>
         </div>
-
+        
+        <div id="main">
+            <%= pop3.getMessageList() %>
+        </div>
 
         <jsp:include page="footer.jsp" />
 

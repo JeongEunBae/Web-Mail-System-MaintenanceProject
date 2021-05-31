@@ -13,7 +13,7 @@
 
 <%
             if (session.isNew()) {
-                session.setAttribute("host", "172.29.112.1");   // should be modified if you change the POP3 server
+                session.setAttribute("host", "172.20.10.8");   // should be modified if you change the POP3 server
                 //session.setAttribute("host", application.getInitParameter("host"));   // should be modified if you change the POP3 server
                 session.setAttribute("debug", "false");
                 //session.setAttribute("pageno", "1");
