@@ -1,2 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context path="/maven_webmail"/>
+<Context path="/maven_webmail">
+     <Resource auth = "Container" driverClassName="com.mysql.cj.jdbc.Driver"
+        maxIdle="2" matToatl="8" maxWaitMillis="5000" name="jdbc/AddrBookDB"
+        username="jdbctester" password="1088" type="javax.sql.DataSource"
+       url = "jdbc:mysql://localhost:3306/webmail?serverTimezone=Asia/Seoul"/>
+    
+</Context>

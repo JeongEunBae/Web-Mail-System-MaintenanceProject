@@ -14,16 +14,13 @@
     </head>
     <body>
         <jsp:include page="header.jsp" />
-    <center>
-        <p>
-            회원가입 성공! 지금바로 로그인 해보세요!
-        </p>
-        
-        <p>    <a href ="index.jsp"> 로그인 페이지로 이동하기.</a>
-            
-            
-        </p>
+        <center>
+            <strong>회원가입 승인 대기중... 기다려 주세요. </strong>
+            <br>
+             <a href ="index.jsp">로그인 페이지로 이동하기.</a>
+
         </center>
+        
         
         
         

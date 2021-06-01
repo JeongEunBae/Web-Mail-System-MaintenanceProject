@@ -1,11 +1,9 @@
 <%-- 
-    Document   : Accept_register
-    Created on : 2021. 5. 15., 오후 3:19:09
+    Document   : UserStateChange
+    Created on : 2021. 5. 30., 오전 1:20:35
     Author     : 김기목
 --%>
 
-<%@page import="cse.maven_webmail.control.CommandType"%>
-<%@page import="java.sql.Connection"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import = "java.sql.*"%>
 
@@ -13,17 +11,30 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>회원가입 승인 화면</title>
+        <title>승인여부 변경 페이지</title>
         <link type="text/css" rel="stylesheet" href="css/main_style.css" />
     </head>
-    <body>
+      <body>
         <jsp:include page="header.jsp" />
-         <div id="sidebar">
+        <div id="sidebar">
             <jsp:include page="sidebar_admin_previous_menu.jsp" />
         </div>
+        <form action="UserAccept.do" method="POST">           
+            <br>
+            변경할 사용자의 ID값을 입력하세요 :  <input type="text" name="change_id" size="20">
+             <input type="submit" name="request_accept" value= "승인"/>
         
-        <h1>회원가입 신청 사용자 목록</h1>
+        </form>
         
+
+        <table border="2">
+        <tr>
+            <th>아이디</th>
+            <th>승인 여부</th>
+        </tr>
+       
+        <p> 미승인 사용자 ID 목록 </p>
+      <tbody>
         <%
             try{
                 String name = "java:/comp/env/jdbc/AddrBookDB";
@@ -34,33 +45,15 @@
                 
                 Statement stmt = conn.createStatement();
                 
-                String sql = "SELECT id,pw,name,tel,accept_check FROM user_register";
-                ResultSet rs = stmt.executeQuery(sql);
-            
-           %>
-            <form action="UserAccept.do" method="POST">
-            <table border="1">
-                    <tr>
-                        <th>아이디</th>
-                        <th>비밀번호</th>
-                        <th>이름</th>
-                        <th>전화번호</th>
-                        <th>회원가입 승인여부</th>
-                    </tr>
-                    
-                   
-                
-                <tbody>
-                    <%
-                        while (rs.next()){
+                String sql = "select id,accept_check from user_register where accept_check = 0 ";
+                ResultSet rs = stmt.executeQuery(sql); 
+                %>
+                <%
+            while (rs.next()){
  
                             out.println("<tr>");
-
                             out.println("<td>" + rs.getString("id")+"</td>");
-                            out.println("<td>" + rs.getString("pw")+"</td>");
-                            out.println("<td>" + rs.getString("name")+"</td>");
-                            out.println("<td>" + rs.getString("tel")+"</td>");
-                       
+                            
                             int accpt_ck = rs.getInt("accept_check");
                             String show_ck = null;
                             
@@ -79,21 +72,13 @@
                         rs.close();
                         stmt.close();
                         conn.close(); 
-
+                        
                 }catch(Exception ex) {
                         out.println("오류발생 . 발생 오류 : " + ex.getMessage() + ")");
                         }  
-                        %>
-                        
-                    
-                </tbody>
-            </table>
-                        <br>
-                        <br>
-                        <center>       
-                            <strong>   <input type="button" value = "승인 하러 가기" onclick="location.href='UserStateChange.jsp'">   </strong>
-                        </center>
-            </form>
+           %>
+                           </tbody>
+           </table>  
          <jsp:include page="footer.jsp" />
     </body>
 </html>

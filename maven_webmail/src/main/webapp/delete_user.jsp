@@ -6,8 +6,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="cse.maven_webmail.control.CommandType" %>
 <%@page import="cse.maven_webmail.model.UserAdminAgent" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
 
 <!DOCTYPE html>
 
@@ -45,12 +43,12 @@
             %>
             <form name="DeleteUser" action="UserAdmin.do?menu=<%=CommandType.DELETE_USER_COMMAND%>"
                   method="POST">
-            <%
+                <%
                             for (String userId : agent.getUserList()) {
                                 out.print("<input type=checkbox name=\"selectedUsers\" value=\"" + userId + "\" />");
                                 out.println(userId + " <br>");
                             }
-            %>
+                %>
                 <br>
                 <input type="submit" value="제거" name="delete_command" onClick ="return getConfirmResult()"/>
                 <input type="reset" value="선택 전부 취소" />

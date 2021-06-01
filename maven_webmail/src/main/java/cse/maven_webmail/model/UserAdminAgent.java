@@ -82,7 +82,7 @@ public class UserAdminAgent {
         boolean status = false;
         byte[] messageBuffer = new byte[1024];
 
-         log.error("addUser() called");
+         log.info("addUser() called");
         if (!isConnected) {
             return status;
         }
