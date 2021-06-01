@@ -35,9 +35,9 @@
         <div id="login_form">
             <form method="POST" action="ResetPassword.do">
                 --- 비밀번호 재설정 --- <br/>
-                아이디: <input type="text" name="userid" size="20"> <br />
-                이&nbsp;&nbsp;&nbsp;름: <input type="text" name="username" size="20"> <br />
-                변경할 비밀번호: <input type="password" name="password" size="20"> <br /><br />
+                아이디: <input type="text" name="userid" size="20" required> <br />
+                이&nbsp;&nbsp;&nbsp;름: <input type="text" name="username" size="20" required> <br />
+                변경할 비밀번호: <input type="password" name="password" size="20" required> <br /><br />
                 
                 <input type="submit" value="비밀번호 재설정" name="B1">&nbsp;&nbsp;&nbsp;
                 <input type="button" value="돌아가기" name="B2" onclick="gohome();">

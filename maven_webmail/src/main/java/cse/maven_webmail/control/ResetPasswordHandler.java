@@ -16,6 +16,9 @@ import cse.maven_webmail.model.ResetPasswordAgent;
 import javax.servlet.RequestDispatcher;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  *
  * @author chung
@@ -32,25 +35,53 @@ public class ResetPasswordHandler extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     
-    private String userid;
+    private String userid = "";
+    private String passwd = "";
+    Log log = LogFactory.getLog(ResetPasswordHandler.class);
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
         try (PrintWriter out = response.getWriter()) {
             request.setCharacterEncoding("UTF-8");
+            
             userid = request.getParameter("userid");
+            passwd = request.getParameter("password");
             String inputname = request.getParameter("username");
-            String username = "test"; // 데이터베이스의 이름 가져오기
-            if(userid == null || !inputname.equals(username)){
+            
+            String username = ""; // 데이터베이스의 이름 가져오기
+            String name = "java:/comp/env/jdbc/passwd_reset";
+            javax.naming.Context ctx = new javax.naming.InitialContext();
+            javax.sql.DataSource ds = (javax.sql.DataSource) ctx.lookup(name);
+            
+            conn = ds.getConnection();
+            stmt = conn.createStatement();
+            String sql = "SELECT name FROM passwd_reset WHERE id=" + "\'" + userid + "\'";
+           
+            rs = stmt.executeQuery(sql);
+            
+            while(rs.next()){
+                username = rs.getString("name");
+            }
+            
+            if(userid == null || passwd == null || !inputname.equals(username)){
                 RequestDispatcher view = request.getRequestDispatcher("reset_passwd_fail.jsp");
                 view.forward(request, response);
             } else {
                 resetPasswd(request, response, out);
             }
         } catch (Exception ex){
-            Log log = LogFactory.getLog(ResetPasswordHandler.class);
             log.error("ResetPasswordHandler error: " + ex);
+        } finally {
+            if(rs != null)
+                rs.close();
+            if(stmt != null)
+                stmt.close();
+            if(conn != null)
+                conn.close();
         }
     }
     
@@ -60,9 +91,7 @@ public class ResetPasswordHandler extends HttpServlet {
         int port = 4555;
         try{
             ResetPasswordAgent agent = new ResetPasswordAgent(server, port, this.getServletContext().getRealPath("."));
-            userid = request.getParameter("userid");
-            String password = request.getParameter("password");
-            if(agent.resetPasswd(userid, password)){
+            if(agent.resetPasswd(userid, passwd)){
                 out.print(getResetSuccessPopup());
                 status = true;
             } else {
@@ -70,7 +99,6 @@ public class ResetPasswordHandler extends HttpServlet {
                 view.forward(request, response);
             }
         } catch (Exception ex){
-            Log log = LogFactory.getLog(ResetPasswordHandler.class);
             log.error("ResetPasswordCheck - ResetPassword error: " + ex);
         } finally {
             out.close();
@@ -111,7 +139,11 @@ public class ResetPasswordHandler extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (SQLException ex) {
+            Logger.getLogger(ResetPasswordHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -125,7 +157,11 @@ public class ResetPasswordHandler extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (SQLException ex) {
+            Logger.getLogger(ResetPasswordHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
