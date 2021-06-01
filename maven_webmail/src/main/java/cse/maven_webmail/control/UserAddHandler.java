@@ -66,11 +66,17 @@ public class UserAddHandler extends HttpServlet {
                 
         try {
         
-            String className = "com.mysql.cj.jdbc.Driver";
+            //String className = "com.mysql.cj.jdbc.Driver";
+            //Class.forName(className);
+            //String  url = "jdbc:mysql://localhost:3306/webmail?serverTimezone=Asia/Seoul";
+            //String User = "jdbctester";
+            //String Password = "1088";
+            
+            final String className = "com.mysql.cj.jdbc.Driver";
             Class.forName(className);
-            String  url = "jdbc:mysql://localhost:3306/webmail?serverTimezone=Asia/Seoul";
-            String User = "jdbctester";
-            String Password = "1088";
+            final String url = "jdbc:mysql://113.198.235.241:3192/web-mailsystem?zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=Asia/Seoul";
+            final String User = "webmailuser";
+            final String Password = "12345";
 
             String register_id = request.getParameter("register_id");
             String register_pw = request.getParameter("register_pw_check");
