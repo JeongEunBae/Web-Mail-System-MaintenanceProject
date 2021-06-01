@@ -26,11 +26,19 @@
         
         <%
             try{
-                String name = "java:/comp/env/jdbc/AddrBookDB";
-                javax.naming.Context ctx = new javax.naming.InitialContext();
-                javax.sql.DataSource ds = (javax.sql.DataSource)ctx.lookup(name);
+                //String name = "java:/comp/env/jdbc/AddrBookDB";
+                //javax.naming.Context ctx = new javax.naming.InitialContext();
+                //javax.sql.DataSource ds = (javax.sql.DataSource)ctx.lookup(name);
                 
-                Connection conn = ds.getConnection();
+                
+                final String className = "com.mysql.cj.jdbc.Driver";
+                Class.forName(className);
+                final String url = "jdbc:mysql://113.198.235.241:3192/web-mailsystem?zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=Asia/Seoul";
+                final String User = "webmailuser";
+                final String Password = "12345";
+                
+                Connection conn = DriverManager.getConnection(url, User, Password);
+                //Connection conn = ds.getConnection();
                 
                 Statement stmt = conn.createStatement();
                 
