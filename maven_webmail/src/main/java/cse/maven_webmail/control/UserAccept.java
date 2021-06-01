@@ -87,12 +87,13 @@ public class UserAccept extends HttpServlet {
             //r_pstmt.setString(1,request.getParameter("change_id"));
             //r_pstmt.setInt(2,1);
             //rs_2 = r_pstmt.executeQuery(sql_2);
+            //해결완료.    
             
             while(rs.next()){    
                     String server = "127.0.0.1";
                     int port = 4555;
                     
-                    if(rs.getString("id")!=null && rs.getString("id").equals(change_id)){
+                    if(rs.getString("id")!=null && rs.getString("id").equals(change_id)){ // 여기가 입력받은 id값이랑 SQL커서값 동일한 id인지 확인.
 
                       try {
                             UserAdminAgent agent = new UserAdminAgent(server, port, this.getServletContext().getRealPath("."));
