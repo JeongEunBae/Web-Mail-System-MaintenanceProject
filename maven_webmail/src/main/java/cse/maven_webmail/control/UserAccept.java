@@ -80,7 +80,7 @@ public class UserAccept extends HttpServlet {
             String plz_sql ="SELECT id,pw,accept_check FROM user_register WHERE accept_check=1"; 
             rs = stmt.executeQuery(plz_sql);   
             
-            //ADD Kimok
+
             //String sql_2 ="SELECT id,pw,accept_check FROM user_register WHERE id=? and accept_check=?";  
             //<<-- SQL 구문 오류 해결불가.. 이 구문으로 돌리면 완성. 현재는 회원정보 여러개 처리불가
             //r_pstmt = con.prepareStatement(sql_2);
