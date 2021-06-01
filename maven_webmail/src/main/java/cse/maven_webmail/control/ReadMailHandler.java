@@ -114,6 +114,7 @@ public class ReadMailHandler extends HttpServlet {
     }
 
     private boolean deleteMessage(HttpServletRequest request) {
+        System.out.println("=============deleteMessage===========");
         int msgid = Integer.parseInt((String) request.getParameter("msgid"));
         HttpSession httpSession = request.getSession();
         String host = (String) httpSession.getAttribute("host");
@@ -126,6 +127,7 @@ public class ReadMailHandler extends HttpServlet {
     }
     
     private boolean deleteTempMessage(HttpServletRequest request) {
+        System.out.println("=============deleteTempMessage===========");
         int msgid = Integer.parseInt((String) request.getParameter("msgid"));
         HttpSession httpSession = request.getSession();
         String host = (String) httpSession.getAttribute("host");

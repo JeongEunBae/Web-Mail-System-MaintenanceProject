@@ -29,7 +29,7 @@
             
             <p> <a href="main_menu.jsp"> 메인 화면 </a> </p>
         </div>
-            
+
         <div id="main">
             <%= pop3.getTrashMessageList() %>
         </div>
