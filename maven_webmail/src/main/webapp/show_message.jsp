@@ -3,18 +3,18 @@
     Author     : jongmin
 --%>
 
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page language="java" contentType="text/html; charset=utf-8" pageEncoding="UTF-8"%>
 
 <!DOCTYPE html>
 
 <jsp:useBean id="pop3" scope="page" class="cse.maven_webmail.model.Pop3Agent" />
 <%
-            pop3.setHost((String) session.getAttribute("host"));
-            pop3.setUserid((String) session.getAttribute("userid"));
-            pop3.setPassword((String) session.getAttribute("password"));
+    pop3.setHost((String) session.getAttribute("host"));
+    pop3.setUserid((String) session.getAttribute("userid"));
+    pop3.setPassword((String) session.getAttribute("password"));
 %>
 
-
+<%! int messageNum = 1; %>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -30,13 +30,16 @@
 
         <div id="msgBody">
             <% pop3.setRequest(request); %>
-            <%= pop3.getMessage(Integer.parseInt((String) request.getParameter("msgid")))%>
+            <% messageNum = Integer.parseInt((String) request.getParameter("msgid"));%>
+            <%= pop3.getMessage(messageNum)%>
+            <% 
+                
+                session.setAttribute("messageNumber", messageNum);
+                
+             %>
+            
         </div>
         
-        <div id="main">
-            <%= pop3.getMessageList() %>
-        </div>
-
         <jsp:include page="footer.jsp" />
 
 
