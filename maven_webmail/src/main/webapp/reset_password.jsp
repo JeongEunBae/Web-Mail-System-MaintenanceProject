@@ -10,17 +10,17 @@
 
 <script type="text/javascript">
     <!--
-    function gohome(){
+    function gohome() {
         window.location = "/maven_webmail/"
     }
-    -->
+-->
 </script>
 
 <%
-            if (session.isNew()) {
-                session.setAttribute("host", application.getInitParameter("host"));   // should be modified if you change the POP3 server
-                session.setAttribute("debug", "false");
-            }
+    if (session.isNew()) {
+        session.setAttribute("host", application.getInitParameter("host"));   // should be modified if you change the POP3 server
+        session.setAttribute("debug", "false");
+    }
 %>
 
 <html>
@@ -29,7 +29,7 @@
         <title>비밀번호 재설정 화면</title>
         <link type="text/css" rel="stylesheet" href="css/main_style.css" />
     </head>
-    
+
     <body>
         <%@include file="header.jspf" %>
         <div id="login_form">
@@ -38,7 +38,7 @@
                 아이디: <input type="text" name="userid" size="20" required> <br />
                 이&nbsp;&nbsp;&nbsp;름: <input type="text" name="username" size="20" required> <br />
                 변경할 비밀번호: <input type="password" name="password" size="20" required> <br /><br />
-                
+
                 <input type="submit" value="비밀번호 재설정" name="B1">&nbsp;&nbsp;&nbsp;
                 <input type="button" value="돌아가기" name="B2" onclick="gohome();">
             </form>

@@ -4,6 +4,9 @@
  */
 package cse.maven_webmail.control;
 
+
+import com.sun.org.slf4j.internal.Logger;
+import com.sun.org.slf4j.internal.LoggerFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -16,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import cse.maven_webmail.model.Pop3Agent;
-import java.util.logging.Logger;
+import java.util.logging.LogManager;
 
 /**
  *
@@ -25,7 +28,7 @@ import java.util.logging.Logger;
 public class ReadMailHandler extends HttpServlet {
     private static final String CHARACTER_ENCODING_SET = "UTF-8"; // ADD JEONGEUN
 
-    private static final Logger log = Logger.getGlobal();  // ADD JEONGEUN
+    private static Logger logger = LoggerFactory.getLogger(ReadMailHandler.class);// ADD JEONGEUN
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
@@ -77,7 +80,7 @@ public class ReadMailHandler extends HttpServlet {
             request.setCharacterEncoding(CHARACTER_ENCODING_SET); // ADD JEONGEUN
             // LJM 041203 - 아래와 같이 해서 한글파일명 제대로 인식되는 것 확인했음.
             String fileName = request.getParameter("filename");
-            logger.log(Level.SEVERE, ">>>>>> DOWNLOAD: file name = {0} ", fileName); // ADD JEONGEUN
+            logger.trace(">>>>>> DOWNLOAD: file name = " + fileName); // ADD JEONGEUN
             String userid = request.getParameter("userid");
 
             // download할 파일 읽기
@@ -101,7 +104,7 @@ public class ReadMailHandler extends HttpServlet {
             // try-with-resource 문은 fis를 명시적으로 close해 주지 않아도 됨.
             try (FileInputStream fis = new FileInputStream(f)) {
                 int count = 0;
-                while(count = fis.read(b) > 0) { // ADD JEONGEUN
+                while((count = fis.read(b)) > 0) { // ADD JEONGEUN
                 }
             } // MODIFY JEONGEUN
 
@@ -111,7 +114,7 @@ public class ReadMailHandler extends HttpServlet {
             sos.flush();
             sos.close();
         } catch (Exception ex) {
-            log.info("====== DOWNLOAD exception : " + ex); // ADD JEONGEUN
+            logger.trace("====== DOWNLOAD exception : " + ex); // ADD JEONGEUN
         }
     }
 
@@ -126,9 +129,9 @@ public class ReadMailHandler extends HttpServlet {
         Pop3Agent pop3 = new Pop3Agent(host, userid, password);
         return pop3.deleteMessage(msgid, true); // MODIFY JEONGEUN
     }
-<<<<<<< HEAD
+
   // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-=======
+
     
     private boolean deleteTempMessage(HttpServletRequest request) {
         System.out.println("=============deleteTempMessage===========");
@@ -144,7 +147,6 @@ public class ReadMailHandler extends HttpServlet {
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
->>>>>>> feature/MailTempDelete
     /** 
      * Handles the HTTP <code>GET</code> method.
      * @param request servlet request

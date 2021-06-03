@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context path="/maven_webmail">
-<<<<<<< HEAD
      <Resource auth = "Container" driverClassName="com.mysql.cj.jdbc.Driver"
         maxIdle="2" matToatl="8" maxWaitMillis="5000" name="jdbc/AddrBookDB"
-        username="jdbctester" password="1088" type="javax.sql.DataSource"
-       url = "jdbc:mysql://localhost:3306/webmail?serverTimezone=Asia/Seoul"/>
-    
-=======
-    <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver"
-<<<<<<< HEAD
-        maxIdle="2" maxTotal="8" maxWaitMillis="5000" name="jdbc/fakeletter"
-=======
-        maxIdle="2" maxTotal="8" maxWaitMillis="5000" name="jdbc/passwd_reset"
->>>>>>> feature/Login
         username="webmailuser" password="12345" type="javax.sql.DataSource"
         url="jdbc:mysql://113.198.235.241:3192/web-mailsystem?serverTimezone=Asia/Seoul"/>
->>>>>>> feature/MailTempDelete
+    
+        <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver"
+        maxIdle="2" maxTotal="8" maxWaitMillis="5000" name="jdbc/passwd_reset"
+        
+        username="webmailuser" password="12345" type="javax.sql.DataSource"
+        url="jdbc:mysql://113.198.235.241:3192/web-mailsystem?serverTimezone=Asia/Seoul"/>
+        <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver"
+
+        maxIdle="2" maxTotal="8" maxWaitMillis="5000" name="jdbc/fakeletter"        
+        username="webmailuser" password="12345" type="javax.sql.DataSource"
+        url="jdbc:mysql://113.198.235.241:3192/web-mailsystem?serverTimezone=Asia/Seoul"/>
 </Context>

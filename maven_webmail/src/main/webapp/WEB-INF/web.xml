@@ -40,7 +40,7 @@
         <url-pattern>/UserAdmin.do</url-pattern>
         
     </servlet-mapping>
-        <servlet-mapping>
+    <servlet-mapping>
         <servlet-name>UserAccept</servlet-name>
         <url-pattern>/UserAccept.do</url-pattern>
     </servlet-mapping>
@@ -65,26 +65,28 @@
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
-<<<<<<< HEAD
-     <resource-ref>
+
+    <resource-ref>
         <description>webmail schema's addrbook table 접근에 필요</description>
         <res-ref-name>jdbc/AddrBookDB</res-ref-name>
-=======
-    <resource-ref>
-<<<<<<< HEAD
-        <description>web-mailsystem fakeletter</description>
-        <res-ref-name>jdbc/fakeletter</res-ref-name>
-=======
-        <description>web-mailsystem passwd_reset</description>
-        <res-ref-name>jdbc/passwd_reset</res-ref-name>
->>>>>>> feature/Login
->>>>>>> feature/MailTempDelete
         <res-type>javax.sql.DataSource</res-type>
         <res-auth>Container</res-auth>
         <res-sharing-scope>Shareable</res-sharing-scope>
     </resource-ref>
-<<<<<<< HEAD
+    
+    <resource-ref>
+        <description>web-mailsystem fakeletter</description>
+        <res-ref-name>jdbc/fakeletter</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+        <res-sharing-scope>Shareable</res-sharing-scope>
+    </resource-ref>
+    <resource-ref>
+        <description>web-mailsystem passwd_reset</description>
+        <res-ref-name>jdbc/passwd_reset</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+        <res-sharing-scope>Shareable</res-sharing-scope>
+    </resource-ref>
 
-=======
->>>>>>> feature/MailTempDelete
 </web-app>

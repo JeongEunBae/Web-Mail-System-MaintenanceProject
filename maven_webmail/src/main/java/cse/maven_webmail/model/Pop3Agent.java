@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import com.sun.org.slf4j.internal.Logger;
+import com.sun.org.slf4j.internal.LoggerFactory;
 import javax.mail.FetchProfile;
 import javax.mail.Flags;
 import javax.mail.Folder;
@@ -34,6 +34,7 @@ public class Pop3Agent {
     private String userid;
     private String password;
     private Store store;
+    private String exceptionType;
     private HttpServletRequest request;
     private String username;
     private final static String name = "java:/comp/env/jdbc/fakeletter";
@@ -42,9 +43,10 @@ public class Pop3Agent {
     
 
     private static final String FOLDER_NAME = "INBOX"; // ADD JEONGEUN
-    private static final Logger log = Logger.getGlobal();  // ADD JEONGEUN
+    private static Logger logger = LoggerFactory.getLogger(Pop3Agent.class);// ADD JEONGEUN
 
-    private static final boolean CONNECT_TO_STORE = connectToStore();  // ADD JEONGEUN
+    private boolean CONNECT_TO_STORE = connectToStore();  // ADD JEONGEUN
+    
     public Pop3Agent() {
     }
 
@@ -62,18 +64,16 @@ public class Pop3Agent {
             store.close();
             return status; // ADD JEONGEUN
         } catch (Exception ex) {
-            log.info("Pop3Agent.validate() error : " + ex); // MODIFY JEONGEUN
+            logger.trace("Pop3Agent.validate() error : " + ex); // MODIFY JEONGEUN
             status = false;  // for clarity
             return status; // ADD JEONGEUN
         }
     }
 
-<<<<<<< HEAD
+
     public boolean deleteMessage(int msgid, boolean reallyDelete) { // MODIFY JEONGEUN
-=======
-    public boolean deleteMessage(int msgid, boolean really_delete) {
         System.out.println("======================deleteMessage====================");
->>>>>>> feature/MailTempDelete
+
         boolean status = false;
 
         if (!CONNECT_TO_STORE) {
@@ -84,7 +84,7 @@ public class Pop3Agent {
                 System.out.println("deleteMessage DB");
             }
         } catch (SQLException ex) {
-            Logger.getLogger(Pop3Agent.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(Pop3Agent.class.getName() + ex);
         }
 
         // 가져온 임시 삭제된 메시지 리스트의 msgid-1 번째 있는 메시지가 삭제할 msgid.
@@ -95,7 +95,7 @@ public class Pop3Agent {
         try {
             saveListToDB();
         } catch (SQLException ex) {
-            Logger.getLogger(Pop3Agent.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(Pop3Agent.class.getName() + ex);
         }
         System.out.println(realMsgid);
         try {
@@ -104,13 +104,8 @@ public class Pop3Agent {
             folder.open(Folder.READ_WRITE);
 
             // Message에 DELETED flag 설정
-<<<<<<< HEAD
             Message msg = folder.getMessage(msgid);
             msg.setFlag(Flags.Flag.DELETED, reallyDelete); // MODIFY JEONGEUN
-=======
-            Message msg = folder.getMessage(realMsgid);
-            msg.setFlag(Flags.Flag.DELETED, really_delete);
->>>>>>> feature/MailTempDelete
 
             // 폴더에서 메시지 삭제
            
@@ -120,7 +115,8 @@ public class Pop3Agent {
             status = true;
             return status; // ADD JEONGEUN
         } catch (Exception ex) {
-            log.info("deleteMessage() error: " + ex); // MODIFY JEONGEUN
+            logger.trace("deleteMessage() error: " + ex); // MODIFY JEONGEUN
+            return status;
         }
     }
     
@@ -137,7 +133,7 @@ public class Pop3Agent {
             }
         } catch (SQLException ex) {
             System.out.println(ex.getStackTrace());
-            Logger.getLogger(Pop3Agent.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(Pop3Agent.class.getName() + ex);
         }
         
         int messageCount = fake_num_list.size();
@@ -169,7 +165,7 @@ public class Pop3Agent {
         } catch (SQLException ex){
             System.out.println("deleteMessageFake's saveListToDB StackTrace: ");
             System.out.println(ex.getStackTrace());
-            Logger.getLogger(Pop3Agent.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(Pop3Agent.class.getName() + ex);
         }
         status = true;
         return status;
@@ -182,7 +178,7 @@ public class Pop3Agent {
         String result = "";
         Message[] messages = null;
 
-        if (!CONNECT_TO_STORE()) {  // 3.1
+        if (!connectToStore()) {  // 3.1
 //            System.err.println("POP3 connection failed!") // MODIFY JEONGEUN
             return "POP3 연결이 되지 않아 메일 목록을 볼 수 없습니다.";
         }
@@ -235,11 +231,9 @@ public class Pop3Agent {
             folder.fetch(tmp_messages, fp);
                         
             MessageFormatter formatter = new MessageFormatter(userid);  //3.5
-<<<<<<< HEAD
-            result = formatter.getMessageTable(messages);   // 3.6
-=======
+            
             result = formatter.getMessageTable(tmp_messages);   // 3.6
->>>>>>> feature/MailTempDelete
+
             
             folder.close(true);  // 3.7
             store.close();       // 3.8
@@ -258,8 +252,8 @@ public class Pop3Agent {
         String result = "";
         Message[] messages = null;
 
-        if (!CONNECT_TO_STORE()) {  // 3.1
-            log.info("POP3 connection failed!"); // MODIFY JEONGEUN
+        if (!connectToStore()) {  // 3.1
+            logger.trace("POP3 connection failed!"); // MODIFY JEONGEUN
             return "POP3 연결이 되지 않아 메일 목록을 볼 수 없습니다.";
         }
 
@@ -281,7 +275,7 @@ public class Pop3Agent {
             store.close();       // 3.8
             return result; // ADD JEONGEUN
         } catch (Exception ex) {
-            log.info("Pop3Agent.getMessageToMeList() : exception = " + ex); // MODIFY JEONGEUN
+            logger.trace("Pop3Agent.getMessageToMeList() : exception = " + ex); // MODIFY JEONGEUN
             result = "Pop3Agent.getMessageToMeList() : exception = " + ex;
             return result; // ADD JEONGEUN
         }
@@ -290,8 +284,8 @@ public class Pop3Agent {
     public String getMessage(int n) {
         String result = "POP3  서버 연결이 되지 않아 메시지를 볼 수 없습니다.";
 
-        if (!CONNECT_TO_STORE()) {
-            log.info("POP3 connection failed!"); // MODIFY JEONGEUN
+        if (!connectToStore()) {
+            logger.trace("POP3 connection failed!"); // MODIFY JEONGEUN
             return result;
         }
 
@@ -303,18 +297,14 @@ public class Pop3Agent {
 
             MessageFormatter formatter = new MessageFormatter(userid);
             formatter.setRequest(request);  // 210308 LJM - added
-<<<<<<< HEAD
-            result = formatter.getMessage(message); 
 
-=======
             result = formatter.getMessage(message);
-            
->>>>>>> feature/MailTempDelete
+
             folder.close(true);
             store.close();
             return result; // ADD JEONGEUN
         } catch (Exception ex) {
-            log.info("Pop3Agent.getMessageList() : exception = " + ex); // MODIFY JEONGEUN
+            logger.trace("Pop3Agent.getMessageList() : exception = " + ex); // MODIFY JEONGEUN
             result = "Pop3Agent.getMessage() : exception = " + ex;
             return result; // ADD JEONGEUN
         }
@@ -333,7 +323,7 @@ public class Pop3Agent {
                 return "DB 서버 연결이 되지 않아 메시지를 볼 수 없습니다.";
             }
         } catch (SQLException ex) {
-            Logger.getLogger(Pop3Agent.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(Pop3Agent.class.getName() + ex);
         }
             
         int numListCount = fake_num_list.size();       //임시로 삭제된 메일번호 목록의 개수
@@ -385,6 +375,7 @@ public class Pop3Agent {
             return status; // ADD JEONGEUN
         } catch (Exception ex) {
             exceptionType = ex.toString();
+            return status;
         }
     }
     

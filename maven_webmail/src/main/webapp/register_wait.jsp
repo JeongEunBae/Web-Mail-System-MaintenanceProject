@@ -14,17 +14,17 @@
     </head>
     <body>
         <jsp:include page="header.jsp" />
-        <center>
-            <strong>회원가입 승인 대기중... 기다려 주세요. </strong>
-            <br>
-             <a href ="index.jsp">로그인 페이지로 이동하기.</a>
+    <center>
+        <strong>회원가입 승인 대기중... 기다려 주세요. </strong>
+        <br>
+        <a href ="index.jsp">로그인 페이지로 이동하기.</a>
 
-        </center>
-        
-        
-        
-        
-        
-         <jsp:include page="footer.jsp" />
-    </body>
+    </center>
+
+
+
+
+
+    <jsp:include page="footer.jsp" />
+</body>
 </html>
