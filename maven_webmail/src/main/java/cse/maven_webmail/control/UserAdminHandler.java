@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import cse.maven_webmail.model.UserAdminAgent;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 /**
  *
  * @author jongmin
@@ -37,7 +39,7 @@ public class UserAdminHandler extends HttpServlet {
             if (userid == null || !userid.equals("admin")) {
                 out.println("현재 사용자(" + userid + ")의 권한으로 수행 불가합니다.");
                 out.println("<a href=/WebMailSystem/> 초기 화면으로 이동 </a>");
-                return;
+              
             } else {
 
                 request.setCharacterEncoding("UTF-8");
@@ -58,7 +60,8 @@ public class UserAdminHandler extends HttpServlet {
                 }
             }
         } catch (Exception ex) {
-            System.err.println(ex.toString());
+            Log log = LogFactory.getLog(UserAdminHandler.class); 
+            log.error(ex.toString());
         }
     }
 
@@ -72,8 +75,7 @@ public class UserAdminHandler extends HttpServlet {
             out.println("userid = " + userid + "<br>");
             out.println("password = " + password + "<br>");
             out.flush();
-            // if (addUser successful)  사용자 등록 성공 팦업창
-            // else 사용자 등록 실패 팝업창
+            
             if (agent.addUser(userid, password)) {
                 out.println(getUserRegistrationSuccessPopUp());
             } else {
@@ -81,7 +83,9 @@ public class UserAdminHandler extends HttpServlet {
             }
             out.flush();
         } catch (Exception ex) {
-            out.println("시스템 접속에 실패했습니다.");
+            Log log = LogFactory.getLog(UserAdminHandler.class);
+            
+            log.error("시스템 접속에 실패했습니다.");
         }
     }
 
@@ -135,8 +139,11 @@ public class UserAdminHandler extends HttpServlet {
             String[] deleteUserList = request.getParameterValues("selectedUsers");
             agent.deleteUsers(deleteUserList);
             response.sendRedirect("admin_menu.jsp");
-        } catch (Exception ex) {
-            System.out.println(" UserAdminHandler.deleteUser : exception = " + ex);
+        } catch (Exception ex) {         
+            Log log = LogFactory.getLog(UserAdminHandler.class);
+            log.error(" UserAdminHandler.deleteUser : exception = " + ex);
+           
+              
         }
     }
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
