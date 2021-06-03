@@ -136,7 +136,7 @@ public class UserAdminHandler extends HttpServlet {
             agent.deleteUsers(deleteUserList);
             response.sendRedirect("admin_menu.jsp");
         } catch (Exception ex) {
-            System.out.println(" UserAdminHandler.deleteUser : exception = " + ex);
+            System.out.println("UserAdminHandler.deleteUser : exception = " + ex);
         }
     }
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

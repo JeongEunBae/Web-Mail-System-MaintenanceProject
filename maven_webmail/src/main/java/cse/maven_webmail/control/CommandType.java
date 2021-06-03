@@ -23,4 +23,5 @@ public class CommandType {
 
     public final static int LOGIN = 91;
     public final static int LOGOUT = 92;
+    public final static int RESET_PASSWORD = 93;
 }

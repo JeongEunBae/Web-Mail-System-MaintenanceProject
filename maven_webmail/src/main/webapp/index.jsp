@@ -40,6 +40,10 @@
                 <input type="reset" value="다시 입력" name="B2">
             </form>
         </div>
+                
+        <div id="login_form">
+            <input type="button" value="비밀번호 재설정" name="B3" onclick="location.href='/maven_webmail/reset_password.jsp'"> <br />
+        </div>
 
 
         <%@include file="footer.jspf"%>
