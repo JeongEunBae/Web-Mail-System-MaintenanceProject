@@ -1,0 +1,136 @@
+/* 
+    Document   : css/main_style.css
+    Author     : jongmin
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+root { 
+    display: block;
+}
+
+body {
+    background-color: #ffffff;
+    /* background-image: url(/webmail2010/images/bg_image.jpg); */
+}
+
+
+div {overflow:auto;} /* 해당 범위를 벗어나지 않으면 그대로 표시하고, 벗어나면 스크롤바를 표시 */
+
+table {
+    white-space:nowrap; /* 공백처리 */
+    border-collapse: collapse;
+    margin: 0px 15px 0 15px;
+
+}
+
+td, th {
+    border: 1px solid #ddd;
+    text-align: left;
+    padding: 5px;
+}
+tr:nth-child(even)
+{
+    background-color: #f2f2f2;
+}
+th {
+    background-color:gray;
+    color: white;
+}
+
+
+td#sender {
+    width: 20%;
+}
+
+td#date {
+    width: 22%;
+}
+
+
+td#subject {
+    text-align: left;
+    width: 50%;
+}
+
+
+#login_header {
+    font-size: 200%;
+    color: #000000;
+    border-bottom: solid;
+}
+
+#login_form {
+    text-align: center;
+    margin: 100px 10px 100px 10px;
+}
+
+#login_fail {
+    color: fuchsia;
+    margin: 100px 200px 100px 200px;
+    padding: 50px;
+    line-height: 200%;
+    /* border: red ridge medium; */
+}
+
+#sidebar {
+    margin: 20px 10px 10px 10px;
+    padding: 10px;
+    width: 150px;
+    float: left;
+    
+}
+
+#main {
+    margin-top: 50px;
+    margin-left: 190px;
+    text-align: left;
+}
+
+#addrbook, #msgBody {
+    margin-top: 50px;
+    margin-left: 240px;
+    margin-right: 10px;
+    padding: 10px;
+    text-align: left;
+    border: thin solid ;
+}
+
+#msgBody {
+    background-color:#f7f7f7;
+    color: #000000;
+}
+
+a:link {
+
+}
+
+a:visited {
+    color: #000000;
+}
+
+a:hover {
+    color:  aqua;
+    background: fuchsia;
+}
+
+#footer {
+    font-size: smaller;
+    text-align: center;
+    border: solid 1px;
+    border-color: black;
+    color: gray;
+    margin: 20px 10px 0px 10px;
+    padding: 10px;
+    clear: left;
+}
+
+.reply{
+    margin-top: 100px;
+    margin-left: 190px;
+}
