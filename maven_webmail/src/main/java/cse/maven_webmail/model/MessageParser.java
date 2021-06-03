@@ -59,11 +59,11 @@ public class MessageParser {
             printMessage(parseBody);
             //  예외가 발생하지 않았으므로 정상적으로 동작하였음.
             status = true;
+            return status; // ADD JEONGEUN
         } catch (Exception ex) {
             System.out.println("MessageParser.parse() - Exception : " + ex);
             status = false;
-        } finally {
-            return status;
+            return status; // ADD JEONGEUN
         }
     }
 
@@ -82,9 +82,8 @@ public class MessageParser {
     }
 
     // ref: http://www.oracle.com/technetwork/java/faq-135477.html#readattach
-    private void getPart(Part p) throws Exception {
+    private void getPart(Part p) throws Exception { // MODIFY JEONGEUN
         String disp = p.getDisposition();
-
         if (disp != null && (disp.equalsIgnoreCase(Part.ATTACHMENT)
                 || disp.equalsIgnoreCase(Part.INLINE))) {  // 첨부 파일
             fileName = MimeUtility.decodeText(p.getFileName());

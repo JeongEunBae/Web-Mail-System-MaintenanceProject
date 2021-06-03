@@ -24,9 +24,12 @@ public class Pop3Agent {
     private String userid;
     private String password;
     private Store store;
-    private String exceptionType;
     private HttpServletRequest request;
 
+    private static final String FOLDER_NAME = "INBOX"; // ADD JEONGEUN
+    private static final Logger log = Logger.getGlobal();  // ADD JEONGEUN
+
+    private static final boolean CONNECT_TO_STORE = connectToStore();  // ADD JEONGEUN
     public Pop3Agent() {
     }
 
@@ -40,43 +43,41 @@ public class Pop3Agent {
         boolean status = false;
 
         try {
-            status = connectToStore();
+            status = connectToStore();             
             store.close();
+            return status; // ADD JEONGEUN
         } catch (Exception ex) {
-            System.out.println("Pop3Agent.validate() error : " + ex);
+            log.info("Pop3Agent.validate() error : " + ex); // MODIFY JEONGEUN
             status = false;  // for clarity
-        } finally {
-            return status;
+            return status; // ADD JEONGEUN
         }
     }
 
-    public boolean deleteMessage(int msgid, boolean really_delete) {
+    public boolean deleteMessage(int msgid, boolean reallyDelete) { // MODIFY JEONGEUN
         boolean status = false;
 
-        if (!connectToStore()) {
+        if (!CONNECT_TO_STORE) {
             return status;
         }
 
         try {
             // Folder 설정
-//            Folder folder = store.getDefaultFolder();
-            Folder folder = store.getFolder("INBOX");
+            Folder folder = store.getFolder(FOLDER_NAME); // ADD JEONGEUN
             folder.open(Folder.READ_WRITE);
 
             // Message에 DELETED flag 설정
             Message msg = folder.getMessage(msgid);
-            msg.setFlag(Flags.Flag.DELETED, really_delete);
+            msg.setFlag(Flags.Flag.DELETED, reallyDelete); // MODIFY JEONGEUN
 
             // 폴더에서 메시지 삭제
-            // Message [] expungedMessage = folder.expunge();
+           
             // <-- 현재 지원 안 되고 있음. 폴더를 close()할 때 expunge해야 함.
             folder.close(true);  // expunge == true
             store.close();
             status = true;
+            return status; // ADD JEONGEUN
         } catch (Exception ex) {
-            System.out.println("deleteMessage() error: " + ex);
-        } finally {
-            return status;
+            log.info("deleteMessage() error: " + ex); // MODIFY JEONGEUN
         }
     }
 
@@ -87,14 +88,14 @@ public class Pop3Agent {
         String result = "";
         Message[] messages = null;
 
-        if (!connectToStore()) {  // 3.1
-            System.err.println("POP3 connection failed!");
+        if (!CONNECT_TO_STORE()) {  // 3.1
+//            System.err.println("POP3 connection failed!") // MODIFY JEONGEUN
             return "POP3 연결이 되지 않아 메일 목록을 볼 수 없습니다.";
         }
 
         try {
             // 메일 폴더 열기
-            Folder folder = store.getFolder("INBOX");  // 3.2
+            Folder folder = store.getFolder(FOLDER_NAME);  // 3.2 // ADD JEONGEUN
             folder.open(Folder.READ_ONLY);  // 3.3
 
             // 현재 수신한 메시지 모두 가져오기
@@ -106,14 +107,14 @@ public class Pop3Agent {
 
             MessageFormatter formatter = new MessageFormatter(userid);  //3.5
             result = formatter.getMessageTable(messages);   // 3.6
-
+            
             folder.close(true);  // 3.7
             store.close();       // 3.8
+            return result; // ADD JEONGEUN
         } catch (Exception ex) {
-            System.out.println("Pop3Agent.getMessageList() : exception = " + ex);
+//            System.out.println("Pop3Agent.getMessageList() : exception = " + ex); // MODIFY JEONGEUN
             result = "Pop3Agent.getMessageList() : exception = " + ex;
-        } finally {
-            return result;
+            return result; // ADD JEONGEUN
         }
     }
     
@@ -124,14 +125,14 @@ public class Pop3Agent {
         String result = "";
         Message[] messages = null;
 
-        if (!connectToStore()) {  // 3.1
-            System.err.println("POP3 connection failed!");
+        if (!CONNECT_TO_STORE()) {  // 3.1
+            log.info("POP3 connection failed!"); // MODIFY JEONGEUN
             return "POP3 연결이 되지 않아 메일 목록을 볼 수 없습니다.";
         }
 
         try {
             // 메일 폴더 열기
-            Folder folder = store.getFolder("INBOX");  // 3.2
+            Folder folder = store.getFolder(FOLDER_NAME);  // 3.2 // ADD JEONGEUN
             folder.open(Folder.READ_ONLY);  // 3.3
 
             // 현재 수신한 메시지 모두 가져오기
@@ -141,43 +142,43 @@ public class Pop3Agent {
             fp.add(FetchProfile.Item.ENVELOPE);
             folder.fetch(messages, fp);
             MessageFormatter formatter = new MessageFormatter(userid);  //3.5
-            result = formatter.getMessageToMeTable(messages);   // 3.6
+            result = formatter.getMessageToMeTable(messages);   // 3.6 
             
             folder.close(true);  // 3.7
             store.close();       // 3.8
+            return result; // ADD JEONGEUN
         } catch (Exception ex) {
-            System.out.println("Pop3Agent.getMessageToMeList() : exception = " + ex);
+            log.info("Pop3Agent.getMessageToMeList() : exception = " + ex); // MODIFY JEONGEUN
             result = "Pop3Agent.getMessageToMeList() : exception = " + ex;
-        } finally {
-            return result;
+            return result; // ADD JEONGEUN
         }
     }
     
     public String getMessage(int n) {
         String result = "POP3  서버 연결이 되지 않아 메시지를 볼 수 없습니다.";
 
-        if (!connectToStore()) {
-            System.err.println("POP3 connection failed!");
+        if (!CONNECT_TO_STORE()) {
+            log.info("POP3 connection failed!"); // MODIFY JEONGEUN
             return result;
         }
 
         try {
-            Folder folder = store.getFolder("INBOX");
+            Folder folder = store.getFolder(FOLDER_NAME); // ADD JEONGEUN
             folder.open(Folder.READ_ONLY);
 
             Message message = folder.getMessage(n);
 
             MessageFormatter formatter = new MessageFormatter(userid);
             formatter.setRequest(request);  // 210308 LJM - added
-            result = formatter.getMessage(message);
+            result = formatter.getMessage(message); 
 
             folder.close(true);
             store.close();
+            return result; // ADD JEONGEUN
         } catch (Exception ex) {
-            System.out.println("Pop3Agent.getMessageList() : exception = " + ex);
+            log.info("Pop3Agent.getMessageList() : exception = " + ex); // MODIFY JEONGEUN
             result = "Pop3Agent.getMessage() : exception = " + ex;
-        } finally {
-            return result;
+            return result; // ADD JEONGEUN
         }
     }
 
@@ -197,10 +198,9 @@ public class Pop3Agent {
             store = session.getStore("pop3");
             store.connect(host, userid, password);
             status = true;
+            return status; // ADD JEONGEUN
         } catch (Exception ex) {
             exceptionType = ex.toString();
-        } finally {
-            return status;
         }
     }
 
