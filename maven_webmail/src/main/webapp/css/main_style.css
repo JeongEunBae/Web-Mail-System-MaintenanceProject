@@ -15,23 +15,31 @@ root {
 }
 
 body {
-    background-color: rgb(200, 251, 196);
+    background-color: #ffffff;
     /* background-image: url(/webmail2010/images/bg_image.jpg); */
 }
 
+
+div {overflow:auto;} /* 해당 범위를 벗어나지 않으면 그대로 표시하고, 벗어나면 스크롤바를 표시 */
+
 table {
+    white-space:nowrap; /* 공백처리 */
+    border-collapse: collapse;
     margin: 0px 15px 0 15px;
-    border: thin solid black;
+
 }
 
 td, th {
-    border: 1px solid black;
-    text-align: center;
+    border: 1px solid #ddd;
+    text-align: left;
     padding: 5px;
 }
-
+tr:nth-child(even)
+{
+    background-color: #f2f2f2;
+}
 th {
-    background-color:  gray;
+    background-color:gray;
     color: white;
 }
 
@@ -53,7 +61,7 @@ td#subject {
 
 #login_header {
     font-size: 200%;
-    color: navy;
+    color: #000000;
     border-bottom: solid;
 }
 
@@ -75,6 +83,7 @@ td#subject {
     padding: 10px;
     width: 150px;
     float: left;
+    
 }
 
 #main {
@@ -93,7 +102,8 @@ td#subject {
 }
 
 #msgBody {
-    background-color: yellow;
+    background-color:#f7f7f7;
+    color: #000000;
 }
 
 a:link {
@@ -101,7 +111,7 @@ a:link {
 }
 
 a:visited {
-    color: blue;
+    color: #000000;
 }
 
 a:hover {
