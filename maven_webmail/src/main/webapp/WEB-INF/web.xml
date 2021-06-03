@@ -26,6 +26,10 @@
         <servlet-name>ReadMailHandler</servlet-name>
         <servlet-class>cse.maven_webmail.control.ReadMailHandler</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ResetPasswordHandler</servlet-name>
+        <servlet-class>cse.maven_webmail.control.ResetPasswordHandler</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginHandler</servlet-name>
         <url-pattern>/Login.do</url-pattern>
@@ -49,6 +53,10 @@
         <servlet-name>ReadMailHandler</servlet-name>
         <url-pattern>/ReadMail.do</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ResetPasswordHandler</servlet-name>
+        <url-pattern>/ResetPassword.do</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
             30
@@ -57,12 +65,26 @@
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
+<<<<<<< HEAD
      <resource-ref>
         <description>webmail schema's addrbook table 접근에 필요</description>
         <res-ref-name>jdbc/AddrBookDB</res-ref-name>
+=======
+    <resource-ref>
+<<<<<<< HEAD
+        <description>web-mailsystem fakeletter</description>
+        <res-ref-name>jdbc/fakeletter</res-ref-name>
+=======
+        <description>web-mailsystem passwd_reset</description>
+        <res-ref-name>jdbc/passwd_reset</res-ref-name>
+>>>>>>> feature/Login
+>>>>>>> feature/MailTempDelete
         <res-type>javax.sql.DataSource</res-type>
         <res-auth>Container</res-auth>
         <res-sharing-scope>Shareable</res-sharing-scope>
     </resource-ref>
+<<<<<<< HEAD
 
+=======
+>>>>>>> feature/MailTempDelete
 </web-app>

@@ -301,4 +301,33 @@ public class UserAdminAgent {
             return status;
         }
     }
+
+    public Socket getSocket() {
+        return socket;
+    }
+
+    public InputStream getIs() {
+        return is;
+    }
+
+    public OutputStream getOs() {
+        return os;
+    }
+
+    public boolean isIsConnected() {
+        return isConnected;
+    }
+
+    public String getROOT_ID() {
+        return ROOT_ID;
+    }
+
+    public String getROOT_PASSWORD() {
+        return ROOT_PASSWORD;
+    }
+
+    public String getADMIN_ID() {
+        return ADMIN_ID;
+    }
+ 
 }

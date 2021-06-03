@@ -43,11 +43,18 @@ public class ReadMailHandler extends HttpServlet {
         switch (select) {
             case CommandType.DELETE_MAIL_COMMAND:
                 try (PrintWriter out = response.getWriter()) {
-                    deleteMessage(request);
+                    deleteTempMessage(request);
                     response.sendRedirect("main_menu.jsp");
                 }
                 break;
-
+                
+            case CommandType.DELETE_TEMP_MAIL_COMMAND:
+                try (PrintWriter out = response.getWriter()) {
+                    deleteMessage(request);
+                    response.sendRedirect("main_menu.jsp");
+                }
+                break; 
+                
             case CommandType.DOWNLOAD_COMMAND: // 파일 다운로드 처리
                 download(request, response);
                 break;
@@ -109,8 +116,8 @@ public class ReadMailHandler extends HttpServlet {
     }
 
     private boolean deleteMessage(HttpServletRequest request) {
+        System.out.println("=============deleteMessage===========");
         int msgid = Integer.parseInt((String) request.getParameter("msgid"));
-
         HttpSession httpSession = request.getSession();
         String host = (String) httpSession.getAttribute("host");
         String userid = (String) httpSession.getAttribute("userid");
@@ -119,7 +126,25 @@ public class ReadMailHandler extends HttpServlet {
         Pop3Agent pop3 = new Pop3Agent(host, userid, password);
         return pop3.deleteMessage(msgid, true); // MODIFY JEONGEUN
     }
+<<<<<<< HEAD
   // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+=======
+    
+    private boolean deleteTempMessage(HttpServletRequest request) {
+        System.out.println("=============deleteTempMessage===========");
+        int msgid = Integer.parseInt((String) request.getParameter("msgid"));
+        HttpSession httpSession = request.getSession();
+        String host = (String) httpSession.getAttribute("host");
+        String userid = (String) httpSession.getAttribute("userid");
+        String password = (String) httpSession.getAttribute("password");
+
+        Pop3Agent pop3 = new Pop3Agent(host, userid, password);
+        boolean status = pop3.deleteMessageFake(msgid);
+        return status;
+    }
+
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+>>>>>>> feature/MailTempDelete
     /** 
      * Handles the HTTP <code>GET</code> method.
      * @param request servlet request

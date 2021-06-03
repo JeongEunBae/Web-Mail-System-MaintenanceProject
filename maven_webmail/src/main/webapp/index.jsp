@@ -48,7 +48,16 @@
               </form>
                 </div>
         </div>
+<<<<<<< HEAD
       
+=======
+                
+        <div id="login_form">
+            <input type="button" value="비밀번호 재설정" name="B3" onclick="location.href='/maven_webmail/reset_password.jsp'"> <br />
+        </div>
+
+
+>>>>>>> feature/MailTempDelete
         <%@include file="footer.jspf"%>
         <%-- <jsp:include page="footer.jspf" /> --%>
 

@@ -139,11 +139,16 @@ public class UserAdminHandler extends HttpServlet {
             String[] deleteUserList = request.getParameterValues("selectedUsers");
             agent.deleteUsers(deleteUserList);
             response.sendRedirect("admin_menu.jsp");
+<<<<<<< HEAD
         } catch (Exception ex) {         
             Log log = LogFactory.getLog(UserAdminHandler.class);
             log.error(" UserAdminHandler.deleteUser : exception = " + ex);
            
               
+=======
+        } catch (Exception ex) {
+            System.out.println("UserAdminHandler.deleteUser : exception = " + ex);
+>>>>>>> feature/MailTempDelete
         }
     }
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
