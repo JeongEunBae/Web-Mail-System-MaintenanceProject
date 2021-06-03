@@ -66,13 +66,11 @@ public class ReadMailHandler extends HttpServlet {
 
         ServletOutputStream sos = null;
 
-        try {
-            /* TODO output your page here */
+        try { // MODIFY JEONGEUN
             request.setCharacterEncoding(CHARACTER_ENCODING_SET); // ADD JEONGEUN
             // LJM 041203 - 아래와 같이 해서 한글파일명 제대로 인식되는 것 확인했음.
             String fileName = request.getParameter("filename");
-            log.info(">>>>>> DOWNLOAD: file name = " + fileName); // ADD JEONGEUN
-
+            logger.log(Level.SEVERE, ">>>>>> DOWNLOAD: file name = {0} ", fileName); // ADD JEONGEUN
             String userid = request.getParameter("userid");
 
             // download할 파일 읽기
@@ -95,8 +93,10 @@ public class ReadMailHandler extends HttpServlet {
             byte[] b = new byte[(int) f.length()];
             // try-with-resource 문은 fis를 명시적으로 close해 주지 않아도 됨.
             try (FileInputStream fis = new FileInputStream(f)) {
-                fis.read(b);
-            };
+                int count = 0;
+                while(count = fis.read(b) > 0) { // ADD JEONGEUN
+                }
+            } // MODIFY JEONGEUN
 
             // 다운로드
             sos = response.getOutputStream();
@@ -117,8 +117,7 @@ public class ReadMailHandler extends HttpServlet {
         String password = (String) httpSession.getAttribute("password");
 
         Pop3Agent pop3 = new Pop3Agent(host, userid, password);
-        boolean status = pop3.deleteMessage(msgid, true);
-        return status;
+        return pop3.deleteMessage(msgid, true); // MODIFY JEONGEUN
     }
   // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /** 
