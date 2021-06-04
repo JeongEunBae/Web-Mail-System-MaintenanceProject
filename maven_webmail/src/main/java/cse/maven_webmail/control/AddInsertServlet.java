@@ -37,9 +37,9 @@ public class AddInsertServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         try {
             final String JdbcDriver = "com.mysql.jdbc.Driver";
-            final String JdbcUrl = "jdbc:mysql://localhost:3306/jiuk";
-            final String User = "root";
-            final String password = "root";
+            final String JdbcUrl = "jdbc:mysql://113.198.235.241:3192/web-mailsystem";
+            final String User = "webmailuser";
+            final String password = "12345";
             
             Class.forName(JdbcDriver); // JDBC 드라이버 적재
 
@@ -48,7 +48,7 @@ public class AddInsertServlet extends HttpServlet {
 
                 // PreparedStatement 객체 생성
                 // S125
-                String sql = "INSERT INTO `addrbook` (`username`, `add_name`, `add_email`, `add_tel`) VALUES (?,?,?,?)";
+                String sql = "INSERT INTO `addrbook` (`id`, `add_name`, `add_email`, `add_tel`) VALUES (?,?,?,?)";
                  try(PreparedStatement pstmt = conn.prepareStatement(sql)) { // S2095
                 
                     // userid 값 받아오기 위한 세션
@@ -56,13 +56,13 @@ public class AddInsertServlet extends HttpServlet {
 
                     // SQL 문 완성
                     request.setCharacterEncoding("UTF-8");
-                    String userid = (String) httpSession.getAttribute("userid");
-                    if ((userid != null) || !userid.equals("")) { // S1940
+                    String id = (String) httpSession.getAttribute("id");
+                    if ((id != null) || !id.equals("")) { // S1940
                         String name = request.getParameter("add_name");
                         String email = request.getParameter("add_email");
                         String tel = request.getParameter("add_tel");
 
-                        pstmt.setString(1, userid);
+                        pstmt.setString(1, id);
                         pstmt.setString(2, name);
                         pstmt.setString(3, email);
                         pstmt.setString(4, tel);

@@ -37,9 +37,9 @@ public class AddUpdateServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         try {
             final String JdbcDriver = "com.mysql.jdbc.Driver";
-            final String JdbcUrl = "jdbc:mysql://localhost:3306/jiuk";
-            final String User = "root";
-            final String password = "root";
+            final String JdbcUrl = "jdbc:mysql://113.198.235.241:3192/web-mailsystem";
+            final String User = "webmailuser";
+            final String password = "12345";
 
             Class.forName(JdbcDriver); // JDBC 드라이버 적재
 

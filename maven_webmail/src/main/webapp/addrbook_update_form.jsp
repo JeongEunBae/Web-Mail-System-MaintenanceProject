@@ -23,9 +23,9 @@
         <h1> 주소록 수정 </h1>
         <%
             final String JdbcDriver = "com.mysql.jdbc.Driver";
-            final String JdbcUrl = "jdbc:mysql://localhost:3306/jiuk";
-            final String User = "root";
-            final String password = "root";
+            final String JdbcUrl = "jdbc:mysql://113.198.235.241:3192/web-mailsystem";
+            final String User = "webmailuser";
+            final String password = "12345";
 
             try {
                 Class.forName(JdbcDriver);
