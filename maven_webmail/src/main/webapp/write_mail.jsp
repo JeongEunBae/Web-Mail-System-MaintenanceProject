@@ -15,6 +15,19 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>타인에게 메일 쓰기 화면</title>
         <link type="text/css" rel="stylesheet" href="css/main_style.css" />
+        <script type="text/javascript"> 
+        var openWin;
+    
+        function openChild()
+        {
+            // window.name = "부모창 이름"; 
+            window.name = "write_mail";
+            // window.open("open할 window", "자식창 이름", "팝업창 옵션");
+            openWin = window.open("addpop.jsp",
+                    "childForm", "width=570, height=350, resizable = no, scrollbars = no");    
+        }
+ 
+        </script>
     </head>
     <style>
         div#mw01{
@@ -48,8 +61,9 @@
                     <thread>
                         <tr>
                             <th style="background-color: crimson; text-align:center;">메일 주소</th>
-                            <td> <input type="text" name="to" size="30"
-                                        value=<%=request.getParameter("recv") == null ? "" : request.getParameter("recv")%> >  </td>
+                            <td><input type="button" value="주소록" onclick="openChild()"><br>
+                                <input type="text" size="30" name="to" id="pInput" 
+                                       value="<%=request.getParameter("recv") == null ? "" : request.getParameter("recv")%>"/>  </td>
                             <th style="background-color: background; text-align:center;">참 조</th>
                             <td> <input type="text" name="cc" size="30">  </td>
                             <th style="background-color: background; text-align:center;">메일 제목</th>
