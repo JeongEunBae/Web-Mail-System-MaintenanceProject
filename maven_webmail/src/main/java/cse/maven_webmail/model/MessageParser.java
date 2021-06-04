@@ -61,13 +61,13 @@ public class MessageParser {
             status = true;
             return status; // ADD JEONGEUN
         } catch (Exception ex) {
-            System.out.println("MessageParser.parse() - Exception : " + ex);
+            out.println("MessageParser.parse() - Exception : " + ex); // S106
             status = false;
             return status; // ADD JEONGEUN
         }
     }
 
-    private void getEnvelope(Message m) throws Exception {
+    private void getEnvelope(){ // S112 // S1172
         fromAddress = message.getFrom()[0].toString();  // 101122 LJM : replaces getMyFrom2()
         toAddress = getAddresses(message.getRecipients(Message.RecipientType.TO));
         Address[] addr = message.getRecipients(Message.RecipientType.CC);
@@ -88,7 +88,7 @@ public class MessageParser {
                 || disp.equalsIgnoreCase(Part.INLINE))) {  // 첨부 파일
             fileName = MimeUtility.decodeText(p.getFileName());
             if (fileName != null) {
-                System.out.println("MessageParser.getPart() : file = " + fileName);
+                out.println("MessageParser.getPart() : file = " + fileName); // S106
                 // 첨부 파일을 서버의 내려받기 임시 저장소에 저장
                 String tempUserDir = this.downloadTempDir + File.separator + this.userid;
                 File dir = new File(tempUserDir);
@@ -128,18 +128,18 @@ public class MessageParser {
     }
 
     private void printMessage(boolean printBody) {
-        System.out.println("From: " + fromAddress);
-        System.out.println("To: " + toAddress);
-        System.out.println("CC: " + ccAddress);
-        System.out.println("Date: " + sentDate);
-        System.out.println("Subject: " + subject);
+        out.println("From: " + fromAddress); // S106
+        out.println("To: " + toAddress); // S106
+        out.println("CC: " + ccAddress); // S106
+        out.println("Date: " + sentDate); // S106
+        out.println("Subject: " + subject); // S106
 
         if (printBody) {
-            System.out.println("본 문");
-            System.out.println("---------------------------------");
-            System.out.println(body);
-            System.out.println("---------------------------------");
-            System.out.println("첨부파일: " + fileName);
+            out.println("본 문");
+            out.println("---------------------------------");
+            out.println(body);
+            out.println("---------------------------------");
+            out.println("첨부파일: " + fileName);
         }
     }
 

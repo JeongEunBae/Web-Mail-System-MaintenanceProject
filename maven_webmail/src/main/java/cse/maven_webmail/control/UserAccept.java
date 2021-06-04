@@ -96,29 +96,26 @@ public class UserAccept extends HttpServlet {
                     
                     if(rs.getString("id")!=null && rs.getString("id").equals(change_id)){ // 여기가 입력받은 id값이랑 SQL커서값 동일한 id인지 확인.
 
-                      try(PrintWriter out = response.getWriter()) {
-                            UserAdminAgent agent = new UserAdminAgent(server, port, this.getServletContext().getRealPath("."));
-                            String userid = rs.getString("id"); 
-                            String password = rs.getString("pw");
-                            out.println("userid = " + userid + "<br>");
-                            out.println("password = " + password + "<br>");
-                            out.println("회원가입 승인 성공!! 뒤로가기를 눌러주세요.");
-                            out.flush();
-                            if(agent.addUser(userid, password)) {
-                               Popup.append("<script>alert('사용자 인증을 완료했습니다.'); location.href='UserStateChange.jsp;</script>");
-                               out.println(Popup.toString());
-                            } else {
-                                Popup.append("<script>alert('사용자 등록에 실패했습니다.'); location.href='UserStateChange.jsp;</script>");
-                                out.println(Popup.toString());
-                            }
-                            out.flush();
-                            }
-                        catch (Exception ex) {
-                                 Log log = LogFactory.getLog(UserAccept.class);
-                                log.error("시스템 접속에 실패했습니다.");
-                }
+                        PrintWriter out = response.getWriter()
+                        UserAdminAgent agent = new UserAdminAgent(server, port, this.getServletContext().getRealPath("."));
+                        String userid = rs.getString("id"); 
+                        String password = rs.getString("pw");
+                        out.println("userid = " + userid + "<br>");
+                        out.println("password = " + password + "<br>");
+                        out.println("회원가입 승인 성공!! 뒤로가기를 눌러주세요.");
+                        out.flush();
+                        if(agent.addUser(userid, password)) {
+                           Popup.append("<script>alert('사용자 인증을 완료했습니다.'); location.href='UserStateChange.jsp;</script>");
+                           out.println(Popup.toString());
+                        } else {
+                            Popup.append("<script>alert('사용자 등록에 실패했습니다.'); location.href='UserStateChange.jsp;</script>");
+                            out.println(Popup.toString());
+                        }
+                        out.flush();
+                            
+                        
+                        }
             }
-}
                 
         } catch (Exception ex) {
          Log log = LogFactory.getLog(UserAccept.class);

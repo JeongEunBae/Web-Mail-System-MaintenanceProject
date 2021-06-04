@@ -150,12 +150,9 @@ public class SmtpAgent {
 
             if (this.file1 != null)           // 첨부 파일의 존재가 확인되면
             {
-                File f = new File(this.file1);        // 파일 삭제
-                if (!f.delete())
-                {
-                    System.err.print(this.file1 + " 파일 삭제가 제대로 안 됨.");
-                }
-            }
+
+                Files.delete(this.file1); //S4042
+
             status = true;                 // 전송 완료되었으므로 status를 true로 바꿈.
         }
         catch (RuntimeException e)
@@ -169,7 +166,7 @@ public class SmtpAgent {
         return status;
     }  // sendMessage()
 
-    public boolean sendMessageMe()
+    public boolean sendMessageMe() throws NoSuchFileException, DirectoryNotEmptyException, IOException 
     {
         boolean status = false;           // 현재 전송되지 않았음을 나타내기 위해 false, 전송시 status가 true가 됨.
         // 1. property 설정
@@ -219,11 +216,8 @@ public class SmtpAgent {
 
             if (this.file1 != null)           // 첨부 파일의 존재가 확인되면
             {
-                File f = new File(this.file1);        // 파일 삭제
-                if (!f.delete())
-                {
-                    System.err.print(this.file1 + " 파일 삭제가 제대로 안 됨.");
-                }
+                Files.delete(this.file1); //S4042
+
             }
             status = true;                 // 전송 완료되었으므로 status를 true로 바꿈.
         }

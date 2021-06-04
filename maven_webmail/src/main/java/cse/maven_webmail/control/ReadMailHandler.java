@@ -4,9 +4,6 @@
  */
 package cse.maven_webmail.control;
 
-
-import com.sun.org.slf4j.internal.Logger;
-import com.sun.org.slf4j.internal.LoggerFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -19,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import cse.maven_webmail.model.Pop3Agent;
-import java.util.logging.LogManager;
+//S1128
 
 /**
  *
@@ -29,6 +26,7 @@ public class ReadMailHandler extends HttpServlet {
     private static final String CHARACTER_ENCODING_SET = "UTF-8"; // ADD JEONGEUN
 
     private static Logger logger = LoggerFactory.getLogger(ReadMailHandler.class);// ADD JEONGEUN
+    private static final String USER_ID = "userid"; // S1192
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
@@ -81,7 +79,7 @@ public class ReadMailHandler extends HttpServlet {
             // LJM 041203 - 아래와 같이 해서 한글파일명 제대로 인식되는 것 확인했음.
             String fileName = request.getParameter("filename");
             logger.trace(">>>>>> DOWNLOAD: file name = " + fileName); // ADD JEONGEUN
-            String userid = request.getParameter("userid");
+            String userid = request.getParameter(USER_ID);  // S1192
 
             // download할 파일 읽기
 
@@ -119,11 +117,11 @@ public class ReadMailHandler extends HttpServlet {
     }
 
     private boolean deleteMessage(HttpServletRequest request) {
-        System.out.println("=============deleteMessage===========");
+        logger.trace("=============deleteMessage===========");
         int msgid = Integer.parseInt((String) request.getParameter("msgid"));
         HttpSession httpSession = request.getSession();
         String host = (String) httpSession.getAttribute("host");
-        String userid = (String) httpSession.getAttribute("userid");
+        String userid = (String) httpSession.getAttribute(USER_ID);
         String password = (String) httpSession.getAttribute("password");
 
         Pop3Agent pop3 = new Pop3Agent(host, userid, password);
@@ -134,16 +132,16 @@ public class ReadMailHandler extends HttpServlet {
 
     
     private boolean deleteTempMessage(HttpServletRequest request) {
-        System.out.println("=============deleteTempMessage===========");
+        logger.trace("=============deleteTempMessage===========");
         int msgid = Integer.parseInt((String) request.getParameter("msgid"));
         HttpSession httpSession = request.getSession();
         String host = (String) httpSession.getAttribute("host");
-        String userid = (String) httpSession.getAttribute("userid");
+        String userid = (String) httpSession.getAttribute(USER_ID);
         String password = (String) httpSession.getAttribute("password");
 
         Pop3Agent pop3 = new Pop3Agent(host, userid, password);
-        boolean status = pop3.deleteMessageFake(msgid);
-        return status;
+        return pop3.deleteMessageFake(msgid);
+         // S1488
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

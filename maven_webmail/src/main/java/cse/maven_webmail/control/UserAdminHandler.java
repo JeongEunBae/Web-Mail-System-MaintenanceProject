@@ -65,7 +65,7 @@ public class UserAdminHandler extends HttpServlet {
         }
     }
 
-    private void addUser(HttpServletRequest request, HttpServletResponse response, PrintWriter out) {
+    private void addUser(HttpServletRequest request, PrintWriter out) { // S1172
         String server = "127.0.0.1";
         int port = 4555;
         try {
@@ -131,7 +131,7 @@ public class UserAdminHandler extends HttpServlet {
         return successPopUp.toString();
     }
 
-    private void deleteUser(HttpServletRequest request, HttpServletResponse response, PrintWriter out) {
+    private void deleteUser(HttpServletRequest request, HttpServletResponse response) { // S1172
         String server = "127.0.0.1";
         int port = 4555;
         try {

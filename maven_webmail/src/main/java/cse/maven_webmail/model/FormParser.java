@@ -100,8 +100,8 @@ public class FormParser {
             ServletFileUpload upload = new ServletFileUpload(diskFactory);
 
             // 4. request 객체 파싱
-            List fileItems = upload.parseRequest(request);
-            Iterator i = fileItems.iterator();
+            List<?> fileItems = upload.parseRequest(request); // S3740
+            Iterator<?> i = fileItems.iterator(); 
             while (i.hasNext()) {
                 FileItem fi = (FileItem) i.next();
                 if (fi.isFormField()) {  // 5. 폼 필드 처리
@@ -120,7 +120,7 @@ public class FormParser {
                 } else {  // 6. 첨부 파일 처리
                     if (!(fi.getName() == null || fi.getName().equals(""))) {
                         String fieldName = fi.getFieldName();
-                        System.out.println("ATTACHED FILE : " + fieldName + " = " + fi.getName());
+                        out.println("ATTACHED FILE : " + fieldName + " = " + fi.getName()); //S106
 
                         // 절대 경로 저장
                         setFileName(uploadTargetDir + "/" + fi.getName());
@@ -133,7 +133,7 @@ public class FormParser {
                 }
             }
         } catch (Exception ex) {
-            System.out.println("FormParser.parse() : exception = " + ex);
+            out.println("FormParser.parse() : exception = " + ex); //S106
         }
     }  // parse()
 }

@@ -57,7 +57,7 @@ public class UserAdminAgent {
         Properties props = new Properties();
         String propertyFile =  this.cwd + "/WEB-INF/classes/config/system.properties";
         propertyFile = propertyFile.replace("\\", "/");
-        System.out.printf("prop path = %s%n", propertyFile);
+        printf("prop path = %s%n", propertyFile); // S106
             
         try (BufferedInputStream bis =
                 new BufferedInputStream(
@@ -66,7 +66,7 @@ public class UserAdminAgent {
             ROOT_ID = props.getProperty("root_id");
             ROOT_PASSWORD = props.getProperty("root_password");
             ADMIN_ID = props.getProperty("admin_id");
-            System.out.printf("ROOT_ID = %s\nROOT_PASS = %s\n", ROOT_ID, ROOT_PASSWORD);
+            out.printf(String.format("ROOT_ID = %s\nROOT_PASS = %s\n", ROOT_ID, ROOT_PASSWORD)); // S106 , 3457
              
         } catch (IOException ioe) {
              log.error("UserAdminAgent: 초기화 실패 - " + ioe.getMessage());
@@ -94,10 +94,13 @@ public class UserAdminAgent {
 
             // 2: response for "adduser" command
             java.util.Arrays.fill(messageBuffer, (byte) 0);
-
-            is.read(messageBuffer);
-            String recvMessage = new String(messageBuffer); 
-            log.info(recvMessage);
+            
+            int count = 0;
+            while ((count = is.read(messageBuffer)) > 0) { // S2674
+                String recvMessage = new String(messageBuffer); 
+                log.info(recvMessage);
+            }
+            
             // 3: 기존 메일사용자 여부 확인
             if (recvMessage.contains("added")) {
                 status = true;
@@ -106,13 +109,12 @@ public class UserAdminAgent {
             }
             // 4: 연결 종료
             quit();
-            System.out.flush();// for test
+            out.flush();// for test // S106
             socket.close();
+            return status; // S1143
         } catch (Exception ex) {
             log.error(ex.toString());
             status = false;
-        } finally {
-            // 5: 상태 반환
             return status;
         }
     }  
@@ -132,7 +134,11 @@ public class UserAdminAgent {
 
             // 2: "listusers" 명령에 대한 응답 수신
             java.util.Arrays.fill(messageBuffer, (byte) 0);
-            is.read(messageBuffer);
+            int count = 0;
+            while ((count = is.read(messageBuffer)) > 0) { // S2674
+                String recvMessage = new String(messageBuffer); 
+                log.info(recvMessage);
+            }
 
             // 3: 응답 메시지 처리
             String recvMessage = new String(messageBuffer);
@@ -140,9 +146,9 @@ public class UserAdminAgent {
             userList = parseUserList(recvMessage);
 
             quit();
+            return userList; // S1143
         } catch (Exception ex) {
             log.error(ex);
-        } finally {
             return userList;
         }
     }  // getUserList()
@@ -184,11 +190,15 @@ public class UserAdminAgent {
             for (String userId : userList) {
                 // 1: "deluser" 명령 송신
                 command = "deluser " + userId + EOL;
-                os.write(command.getBytes()); 
-                log.info(command);
+                int writeCount = 0;
+                while ((writeCount = os.write(command.getBytes())) > 0) { // S2674
+                    log.info(command);
+                }           
                 // 2: 응답 메시지 수신
                 java.util.Arrays.fill(messageBuffer, (byte) 0);
-                is.read(messageBuffer);
+                int readCount = 0;
+                while((readCount = is.read(messageBuffer)) > 0) { // S2674
+                }
 
                 // 3: 응답 메시지 분석
                 recvMessage = new String(messageBuffer);
@@ -198,9 +208,9 @@ public class UserAdminAgent {
                 }
             }
             quit();
+            return status; // S1143
         } catch (Exception ex) {
             log.error(ex);
-        } finally {
             return status;
         }
     }  // deleteUsers()
@@ -212,45 +222,55 @@ public class UserAdminAgent {
         try {
             // --> verify userid
             String verifyCommand = "verify " + userid;
-            os.write(verifyCommand.getBytes());
+            int count = 0;
+            while((count = os.write(verifyCommand.getBytes())) > 0) {
+            }
 
             // read the result for verify command
             // <-- User userid exists   or
             // <-- User userid does not exist
-            is.read(messageBuffer);
+            int readCount = 0;
+            while((readCount = is.read(messageBuffer)) > 0) { // S2674
+            }
             String recvMessage = new String(messageBuffer);
             if (recvMessage.contains("exists")) {
                 status = true;
             }
-
+                
             quit();  // quit command
+            return status; // S1143
         } catch (IOException ex) {
             log.error(ex);
-        } finally {
             return status;
         }
     }
 
-    private boolean connect() throws Exception {
+    private boolean connect(){ //S112
         byte[] messageBuffer = new byte[1024];
         boolean returnVal = false;
         String sendMessage;
 
-        System.out.println("UserAdminAgent.connect() called...");
+        out.println("UserAdminAgent.connect() called..."); // S106
 
         // root 인증: id, passwd - default: root
         // 1: Login Id message 수신
-        is.read(messageBuffer);
+        int readCount = 0;
+        while((readCount = is.read(messageBuffer)) > 0) { // S2674
+        }
         String recvMessage = new String(messageBuffer);
          log.info(recvMessage);
 
         // 2: rootId 송신
         sendMessage = ROOT_ID + EOL;
-        os.write(sendMessage.getBytes());
+        int writeCount = 0;
+        while((writeCount = os.write(sendMessage.getBytes())) > 0) { // S2674
+        }
 
         // 3: Password message 수신
         java.util.Arrays.fill(messageBuffer, (byte) 0);
-        is.read(messageBuffer);
+        int readCount = 0;
+        while((readCount = is.read(messageBuffer)) > 0) { // S2674
+        }
         recvMessage = new String(messageBuffer);
          log.info(recvMessage);
          
@@ -261,7 +281,9 @@ public class UserAdminAgent {
         // 5: welcome message 수신
         java.util.Arrays.fill(messageBuffer, (byte) 0);
 
-        is.read(messageBuffer);
+        int readCount = 0;
+        while((readCount = is.read(messageBuffer)) > 0) { // S2674
+        }
         recvMessage = new String(messageBuffer);
 
         log.info(recvMessage);
@@ -281,7 +303,10 @@ public class UserAdminAgent {
         try {
             // 1: quit 명령 송신
             String quitCommand = "quit" + EOL;
-            os.write(quitCommand.getBytes());
+            int writeCount = 0;
+            while((os.write(quitCommand.getBytes()) > 0) { // S2674
+            }
+            
             // 2: quit 명령에 대한 응답 수신
             java.util.Arrays.fill(messageBuffer, (byte) 0);
             if (is.available() > 0) {
@@ -295,10 +320,10 @@ public class UserAdminAgent {
             } else {
                 status = false;
             }
+            return status; // S1143
         } catch (IOException ex) {
             log.error("UserAdminAgent.quit() " + ex);
-        } finally {
-            return status;
+            return status; // S1143
         }
     }
 

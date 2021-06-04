@@ -5,7 +5,7 @@
  */
 package cse.maven_webmail.model;
 
-import cse.maven_webmail.control.CommandType;
+// S1128
 import java.util.Properties;
 import javax.mail.Folder;
 import javax.mail.Message;
@@ -20,20 +20,17 @@ import javax.servlet.http.HttpServletRequest;
 public class ReplyMailAgent {
     private String host;
     private String userid;
-    private String password;
-    private Message message;
-    private String toAddress;
+    private String password; 
+    private String toAddress; //S1068
     private String fromAddress;
     private String ccAddress;
     private String sentDate;
     private String subject;
     private String body;
     private String fileName;
-    private String downloadTempDir = "C:/temp/download/";
-    private int reply_no;
-    
+    private int replyNo;
+    // S1068
     private Store store;
-    private String exceptionType;
     private HttpServletRequest request;
 
     public ReplyMailAgent() {
@@ -78,15 +75,15 @@ public class ReplyMailAgent {
         return fileName;
     }
 
-    public int getReply_no() {
-        return reply_no;
+    public int getReplyNo() { // S100
+        return replyNo;
     }
 
     public void saveMessage(int n) {
         String result = "POP3  서버 연결이 되지 않아 메시지를 볼 수 없습니다.";
 
         if (!connectToStore()) {
-            System.err.println("POP3 connection failed!");
+            out.println(result); // S106
             return;
         }
 
@@ -109,12 +106,12 @@ public class ReplyMailAgent {
             this.body = parser.getBody();
             this.sentDate = parser.getSentDate();
             this.fileName = parser.getFileName();
-            this.reply_no = n;
+            this.replyNo = n;
             
             folder.close(true);
             store.close();
         } catch (Exception ex) {
-            System.out.println("Pop3Agent.getMessageList() : exception = " + ex);
+            out.println("Pop3Agent.getMessageList() : exception = " + ex); // S106
         }
     }
 
@@ -146,9 +143,8 @@ public class ReplyMailAgent {
             store = session.getStore("pop3");
             store.connect(host, userid, password);
             status = true;
+            return status; // S1143
         } catch (Exception ex) {
-            exceptionType = ex.toString();
-        } finally {
             return status;
         }
     }

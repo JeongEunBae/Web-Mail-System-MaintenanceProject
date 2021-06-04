@@ -55,7 +55,7 @@ public class MessageFormatter {
         buffer.append("</table>");
 
         return buffer.toString();
-//        return "MessageFormatter 테이블 결과";
+        // S125
     }
 
     public String getMessageTable(Message[] messages) {
@@ -97,7 +97,6 @@ public class MessageFormatter {
         buffer.append("</table>");
 
         return buffer.toString();
-//        return "MessageFormatter 테이블 결과";
     }
     
     public String getMessageToMeTable(Message[] messages) { // ADD JEONGEUN
@@ -138,13 +137,12 @@ public class MessageFormatter {
         buffer.append("</table>");
 
         return buffer.toString();
-//        return "MessageFormatter 테이블 결과";
     }
     
     public String getMessage(Message message) {
         StringBuilder buffer = new StringBuilder();
 
-        // MessageParser parser = new MessageParser(message, userid);
+       
         MessageParser parser = new MessageParser(message, userid, request);
         parser.parse(true);
 
@@ -161,7 +159,7 @@ public class MessageFormatter {
             buffer.append("<br> <hr> 첨부파일: <a href=ReadMail.do?menu="
                     + CommandType.DOWNLOAD_COMMAND
                     + "&userid=" + this.userid
-                    + "&filename=" + attachedFile.replaceAll(" ", "%20")
+                    + "&filename=" + attachedFile.replace(" ", "%20") // S5361
                     + " target=_top> " + attachedFile + "</a> <br>");
         }
 

@@ -94,7 +94,7 @@ public class WriteMailHandler extends HttpServlet
         agent.setSubj(parser.getSubject());
         agent.setBody(parser.getBody());
         String fileName = parser.getFileName();
-        System.out.println("WriteMailHandler.sendMessage() : fileName = " + fileName);
+        out.println("WriteMailHandler.sendMessage() : fileName = " + fileName); // S106
         if (fileName != null)
         {
             agent.setFile1(fileName);
@@ -125,7 +125,7 @@ public class WriteMailHandler extends HttpServlet
         agent2.setSubj(parser2.getSubject());
         agent2.setBody(parser2.getBody());
         String fileName = parser2.getFileName();
-        System.out.println("WriteMailHandler.sendMessage() : fileName = " + fileName);
+        out.println("WriteMailHandler.sendMessage() : fileName = " + fileName);
         if (fileName != null)
         {
             agent2.setFile1(fileName);

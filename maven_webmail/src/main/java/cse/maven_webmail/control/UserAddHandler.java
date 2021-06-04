@@ -5,7 +5,7 @@ package cse.maven_webmail.control;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-import cse.maven_webmail.model.UserAdminAgent;
+// S1128
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -18,12 +18,11 @@ import org.apache.commons.logging.LogFactory;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+// S1128
+
 import javax.servlet.annotation.WebServlet;
 import javax.swing.Popup;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+// S1128
 
 @WebServlet(name = "UserAddHandler", urlPatterns = {"/UserAddhandler.do"})
 /**
@@ -62,15 +61,11 @@ public class UserAddHandler extends HttpServlet {
         }
     }
 
-    private void adduser(HttpServletRequest request, HttpServletResponse response, PrintWriter out) {              
+    private void adduser(HttpServletRequest request, PrintWriter out) { // S1172          
                 
         try {
         
-            //String className = "com.mysql.cj.jdbc.Driver";
-            //Class.forName(className);
-            //String  url = "jdbc:mysql://localhost:3306/webmail?serverTimezone=Asia/Seoul";
-            //String User = "jdbctester";
-            //String Password = "1088";
+            //S125
             
             final String className = "com.mysql.cj.jdbc.Driver";
             Class.forName(className);
@@ -78,34 +73,34 @@ public class UserAddHandler extends HttpServlet {
             final String User = "webmailuser";
             final String Password = "12345";
 
-            String register_id = request.getParameter("register_id");
-            String register_pw = request.getParameter("register_pw_check");
-            String register_name = request.getParameter("register_name");
-            String register_number = request.getParameter("register_number");
-            int req_ck = 0;
+            String registerId = request.getParameter("register_id");
+            String registerPW = request.getParameter("register_pw_check");
+            String registerName = request.getParameter("register_name");
+            String registerNumber = request.getParameter("register_number");
+            int reqCK = 0;
             
             conn = DriverManager.getConnection(url, User, Password);
             
             String sql = "INSERT INTO user_register VALUES(?,?,?,?,?)";
             
             
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, register_id);
-            pstmt.setString(2, register_pw);
-            pstmt.setString(3, register_name);
-            pstmt.setString(4, register_number);
-            pstmt.setInt(5,req_ck);
+            pstmt = conn.prepareStatement(sql); // S117
+            pstmt.setString(1, registerId);
+            pstmt.setString(2, registerPW);
+            pstmt.setString(3, registerName);
+            pstmt.setString(4, registerNumber);
+            pstmt.setInt(5,reqCK);
             
-            int query_state = pstmt.executeUpdate();
+            int queryState = pstmt.executeUpdate();
 
-            if (query_state >= 1) {
-                StringBuilder Popup = new StringBuilder();
-                Popup.append("<script>alert('회원가입 완료 승인대기중'); location.href='register_wait.jsp';</script>");
+            if (queryState >= 1) {
+                StringBuilder popup = new StringBuilder();
+                popup.append("<script>alert('회원가입 완료 승인대기중'); location.href='register_wait.jsp';</script>");
                 out.println(Popup.toString());
             } else {
-                StringBuilder Popup = new StringBuilder();
-                Popup.append("<script>alert('서버 상태를 확인하세요.'); window.history.back();</script>");
-                out.println(Popup.toString());
+                StringBuilder popup = new StringBuilder();
+                popup.append("<script>alert('서버 상태를 확인하세요.'); window.history.back();</script>");
+                out.println(popup.toString());
             }
             pstmt.close();
             conn.close();

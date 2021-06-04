@@ -14,7 +14,7 @@
 
 <%
             if (session.isNew()) {
-                session.setAttribute("host", "172.20.10.8");   // should be modified if you change the POP3 server
+                session.setAttribute("host", "172.17.88.108");   // should be modified if you change the POP3 server
                 //session.setAttribute("host", application.getInitParameter("host"));   // should be modified if you change the POP3 server
                 session.setAttribute("debug", "false");
                 //session.setAttribute("pageno", "1");
@@ -35,7 +35,7 @@
 
 
         <div id="login_form">
-            <form method="POST" action="Login.do?menu=<%=CommandType.LOGIN %>">
+            <form method="POST" action="Login.do?menu=<%= CommandType.LOGIN %>">
                 사용자: <input type="text" name="userid" size="20"> <br />
                 암&nbsp;&nbsp;&nbsp;호: <input type="password" name="passwd" size="20"> <br /> <br />
                 <input type="submit" value="로그인" name="B1" >&nbsp;&nbsp;&nbsp;

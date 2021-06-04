@@ -57,22 +57,25 @@ public class ResetPasswordHandler extends HttpServlet {
             javax.naming.Context ctx = new javax.naming.InitialContext();
             javax.sql.DataSource ds = (javax.sql.DataSource) ctx.lookup(name);
             
-            conn = ds.getConnection();
-            stmt = conn.createStatement();
-            String sql = "SELECT name FROM passwd_reset WHERE id=" + "\'" + userid + "\'";
-           
-            rs = stmt.executeQuery(sql);
-            
-            while(rs.next()){
-                username = rs.getString("name");
+            try(conn = ds.getConnection()) { // S2095
+                try(stmt = conn.createStatement()) {
+                    String sql = "SELECT name FROM passwd_reset WHERE id=" + "\'" + userid + "\'";
+
+                    rs = stmt.executeQuery(sql);
+
+                    while(rs.next()){
+                        username = rs.getString("name");
+                    }
+
+                    if(userid == null || passwd == null || !inputname.equals(username)){
+                        RequestDispatcher view = request.getRequestDispatcher("reset_passwd_fail.jsp");
+                        view.forward(request, response);
+                    } else {
+                        resetPasswd(request, response, out);
+                    }
+                }
             }
             
-            if(userid == null || passwd == null || !inputname.equals(username)){
-                RequestDispatcher view = request.getRequestDispatcher("reset_passwd_fail.jsp");
-                view.forward(request, response);
-            } else {
-                resetPasswd(request, response, out);
-            }
         } catch (Exception ex){
             log.error("ResetPasswordHandler error: " + ex);
         } finally {

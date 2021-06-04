@@ -14,7 +14,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+// S1128
 
 /**
  *
@@ -41,47 +41,46 @@ public class AddUpdateServlet extends HttpServlet {
             final String User = "root";
             final String password = "root";
 
-            try {
-                // JDBC 드라이버 적재
-                Class.forName(JdbcDriver);
+            Class.forName(JdbcDriver); // JDBC 드라이버 적재
 
-                // Connection 객체 생성
-                Connection conn = DriverManager.getConnection(JdbcUrl, User, password);
+            // Connection 객체 생성
+            try(Connection conn = DriverManager.getConnection(JdbcUrl, User, password)) { // S2095
 
-                // PreparedStatement 객체 생성
-                // String sql ="INSERT INTO addrbook (username, add_name, add_email, add_tel) values (?,?,?,?)";
-                // String sql = "UPDATE addrbook SET add_name=?, add_email=?, add_tel=? WHERE idx=?";
-                String sql = "UPDATE `addrbook` SET `add_name` = ?, `add_email` = ?, `add_tel` = ? WHERE (`idx` = ?)";
+                    // PreparedStatement 객체 생성
+                    // S125
+                    String sql = "UPDATE `addrbook` SET `add_name` = ?, `add_email` = ?, `add_tel` = ? WHERE (`idx` = ?)";
 
-                PreparedStatement pstmt = conn.prepareStatement(sql);
+                    try(PreparedStatement pstmt = conn.prepareStatement(sql)) { // S2095
+                    // SQL 문 완성
+                    request.setCharacterEncoding("UTF-8");
 
-                // SQL 문 완성
-                request.setCharacterEncoding("UTF-8");
+                    String name = request.getParameter("add_name");
+                    String email = request.getParameter("add_email");
+                    String tel = request.getParameter("add_tel");
+                    String addIdx = request.getParameter("idx");
+                    int idx = Integer.parseInt(addIdx);
 
-                String name = request.getParameter("add_name");
-                String email = request.getParameter("add_email");
-                String tel = request.getParameter("add_tel");
-                String add_idx = request.getParameter("idx");
-                int idx = Integer.parseInt(add_idx);
+                    pstmt.setString(1, name);
+                    pstmt.setString(2, email);
+                    pstmt.setString(3, tel);
+                    pstmt.setInt(4, idx);
 
-                pstmt.setString(1, name);
-                pstmt.setString(2, email);
-                pstmt.setString(3, tel);
-                pstmt.setInt(4, idx);
+                    pstmt.executeUpdate(); // 테이블에 변화가 생길때만 사용함
+                    //S4087
 
-                pstmt.executeUpdate(); // 테이블에 변화가 생길때만 사용함
-                pstmt.close();
-                conn.close();
-
-                // TEST
-                //out.println(SuccessPopUp());
-                response.sendRedirect("addrbook_list.jsp");
+                    // TEST
+                    // S125
+                    response.sendRedirect("addrbook_list.jsp");
+                }
 
             } catch (Exception ex) {
 
                 out.println("오류가 발생했습니다.(발생 오류 : " + ex.getMessage() + ")");
                 out.println("<br/> <a href=\"addrbook_list.jsp\">초기 화면으로 가기</a>");
                 out.println("TEST >> " + request.getParameter("idx"));
+            }finally {
+                pstmt.close();
+                conn.close();
             }
         } finally {
             out.close();

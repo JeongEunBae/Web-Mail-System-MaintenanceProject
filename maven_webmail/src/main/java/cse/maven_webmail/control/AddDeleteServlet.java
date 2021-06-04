@@ -14,7 +14,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+// S1128
 
 /**
  *
@@ -40,32 +40,31 @@ public class AddDeleteServlet extends HttpServlet {
             final String JdbcUrl = "jdbc:mysql://localhost:3306/jiuk";
             final String User = "root";
             final String password = "root";
+            
+            Class.forName(JdbcDriver); // JDBC 드라이버 적재
 
-            try {
-                // JDBC 드라이버 적재
-                Class.forName(JdbcDriver);
-
-                // Connection 객체 생성
-                Connection conn = DriverManager.getConnection(JdbcUrl, User, password);
+            // Connection 객체 생성
+            try(Connection conn = DriverManager.getConnection(JdbcUrl, User, password)) { // S2095
 
                 // PreparedStatement 객체 생성
                 String sql = "DELETE FROM addrbook WHERE idx=?";
-                PreparedStatement pstmt = conn.prepareStatement(sql);
+                try(PreparedStatement pstmt = conn.prepareStatement(sql)) { // S2095
+                    //4. SQL문 완성
+                    request.setCharacterEncoding("UTF-8");
+                    String addIdx = request.getParameter("idx"); //get방식으로 받아옴 // S117
+                    int idx = Integer.parseInt(addIdx);
+                    pstmt.setInt(1, idx);
 
-                //4. SQL문 완성
-                request.setCharacterEncoding("UTF-8");
-                String add_idx = request.getParameter("idx"); //get방식으로 받아옴 
-                int idx = Integer.parseInt(add_idx);
-                pstmt.setInt(1, idx);
-
-                // 5. 실행
-                pstmt.executeUpdate(); // 테이블에 변화가 생길때만 사용함
-                pstmt.close();
-                conn.close();
-                response.sendRedirect("addrbook_list.jsp"); //삭제가 정상적으로 이루워지면 addrbook_list.jsp로 돌아간다
+                    // 5. 실행
+                    pstmt.executeUpdate(); // 테이블에 변화가 생길때만 사용함
+                    response.sendRedirect("addrbook_list.jsp"); //삭제가 정상적으로 이루워지면 addrbook_list.jsp로 돌아간다
+                }                
 
             } catch (Exception ex) {
                 out.println("오류가 발생했습니다 (발생오류:" + ex.getMessage() + ")");
+            }finally {
+                pstmt.close(); // S2095
+                conn.close();
             }
         } finally {
             out.close();
