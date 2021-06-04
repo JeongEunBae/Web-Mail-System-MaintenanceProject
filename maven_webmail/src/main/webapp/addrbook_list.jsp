@@ -25,9 +25,9 @@
      
         <%
             final String JdbcDriver = "com.mysql.jdbc.Driver";
-            final String JdbcUrl = "jdbc:mysql://localhost:3306/jiuk";
-            final String User = "root";
-            final String password = "root";
+            final String JdbcUrl = "jdbc:mysql://113.198.235.241:3192/web-mailsystem";
+            final String User = "webmailuser";
+            final String password = "12345";
 
             try {
                 Class.forName(JdbcDriver);
@@ -36,7 +36,7 @@
 
                 Statement stmt = conn.createStatement();
 
-                String sql = "SELECT idx, add_name, add_email, add_tel FROM addrbook where username='" + session.getAttribute("userid") + "'"; 
+                String sql = "SELECT idx, add_name, add_email, add_tel FROM addrbook where username='" + session.getAttribute("id") + "'"; 
                 ResultSet rs = stmt.executeQuery(sql);
 
         %>
@@ -54,11 +54,9 @@
                 
                 <%                            while (rs.next()) {
                         out.println("<tr>");
-                        //out.println("<td><input type='radio' name='i'/></td>");
                         out.println("<td>" + rs.getString("add_name") + "</td>");
                         out.println("<td>" + rs.getString("add_email") + "</td>");
                         out.println("<td>" + rs.getString("add_tel") + "</td>");
-                        //out.println("<td> <input type='button' value='삭제' onclick='AddDel'/></td>");
                         
                         out.println("<td> <a href='AddDeleteServlet?idx=" + rs.getString("idx") + "'>");
                         out.println("<button>삭제</button>");
