@@ -14,6 +14,8 @@ import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -57,7 +59,7 @@ public class UserAdminAgent {
         Properties props = new Properties();
         String propertyFile =  this.cwd + "/WEB-INF/classes/config/system.properties";
         propertyFile = propertyFile.replace("\\", "/");
-        printf("prop path = %s%n", propertyFile); // S106
+        log.info("prop path = " + propertyFile); // S106
             
         try (BufferedInputStream bis =
                 new BufferedInputStream(
@@ -66,7 +68,7 @@ public class UserAdminAgent {
             ROOT_ID = props.getProperty("root_id");
             ROOT_PASSWORD = props.getProperty("root_password");
             ADMIN_ID = props.getProperty("admin_id");
-            out.printf(String.format("ROOT_ID = %s\nROOT_PASS = %s\n", ROOT_ID, ROOT_PASSWORD)); // S106 , 3457
+            log.info(String.format("ROOT_ID = %s\nROOT_PASS = %s\n", ROOT_ID, ROOT_PASSWORD)); // S106 , 3457
              
         } catch (IOException ioe) {
              log.error("UserAdminAgent: 초기화 실패 - " + ioe.getMessage());
@@ -80,6 +82,7 @@ public class UserAdminAgent {
     //   - false: addUser operation failed
     public boolean addUser(String userId, String password) {
         boolean status = false;
+        String recvMessage = "";
         byte[] messageBuffer = new byte[1024];
 
          log.info("addUser() called");
@@ -97,7 +100,7 @@ public class UserAdminAgent {
             
             int count = 0;
             while ((count = is.read(messageBuffer)) > 0) { // S2674
-                String recvMessage = new String(messageBuffer); 
+                recvMessage = new String(messageBuffer); 
                 log.info(recvMessage);
             }
             
@@ -109,7 +112,6 @@ public class UserAdminAgent {
             }
             // 4: 연결 종료
             quit();
-            out.flush();// for test // S106
             socket.close();
             return status; // S1143
         } catch (Exception ex) {
@@ -245,12 +247,13 @@ public class UserAdminAgent {
         }
     }
 
-    private boolean connect(){ //S112
+    private boolean connect(){ try {
+        //S112
         byte[] messageBuffer = new byte[1024];
         boolean returnVal = false;
         String sendMessage;
 
-        out.println("UserAdminAgent.connect() called..."); // S106
+        log.info("UserAdminAgent.connect() called..."); // S106
 
         // root 인증: id, passwd - default: root
         // 1: Login Id message 수신
@@ -258,8 +261,8 @@ public class UserAdminAgent {
         while((readCount = is.read(messageBuffer)) > 0) { // S2674
         }
         String recvMessage = new String(messageBuffer);
-         log.info(recvMessage);
-
+        log.info(recvMessage);
+        
         // 2: rootId 송신
         sendMessage = ROOT_ID + EOL;
         int writeCount = 0;
@@ -268,12 +271,12 @@ public class UserAdminAgent {
 
         // 3: Password message 수신
         java.util.Arrays.fill(messageBuffer, (byte) 0);
-        int readCount = 0;
+        readCount = 0;
         while((readCount = is.read(messageBuffer)) > 0) { // S2674
         }
         recvMessage = new String(messageBuffer);
-         log.info(recvMessage);
-         
+        log.info(recvMessage);
+        
         // 4: rootPassword 송신
         sendMessage = ROOT_PASSWORD + EOL;
         os.write(sendMessage.getBytes());
@@ -281,7 +284,7 @@ public class UserAdminAgent {
         // 5: welcome message 수신
         java.util.Arrays.fill(messageBuffer, (byte) 0);
 
-        int readCount = 0;
+        readCount = 0;
         while((readCount = is.read(messageBuffer)) > 0) { // S2674
         }
         recvMessage = new String(messageBuffer);
@@ -294,7 +297,11 @@ public class UserAdminAgent {
             returnVal = false;
         }
         return returnVal;
-    }  // connect()
+        } // connect()
+        catch (IOException ex) {
+            Logger.getLogger(UserAdminAgent.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     public boolean quit() {
         byte[] messageBuffer = new byte[1024];

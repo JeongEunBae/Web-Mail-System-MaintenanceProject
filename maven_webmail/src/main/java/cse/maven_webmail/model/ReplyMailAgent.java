@@ -12,6 +12,8 @@ import javax.mail.Message;
 import javax.mail.Session;
 import javax.mail.Store;
 import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  *
@@ -32,6 +34,7 @@ public class ReplyMailAgent {
     // S1068
     private Store store;
     private HttpServletRequest request;
+    private Log log = null;
 
     public ReplyMailAgent() {
     }
@@ -41,6 +44,7 @@ public class ReplyMailAgent {
         this.host = host;
         this.userid = userid;
         this.password = password;
+        log = LogFactory.getLog(ReplyMailAgent.class);
     }
     
     public String getUserid() {
@@ -83,7 +87,7 @@ public class ReplyMailAgent {
         String result = "POP3  서버 연결이 되지 않아 메시지를 볼 수 없습니다.";
 
         if (!connectToStore()) {
-            out.println(result); // S106
+            log.error(result); // S106
             return;
         }
 
@@ -111,7 +115,7 @@ public class ReplyMailAgent {
             folder.close(true);
             store.close();
         } catch (Exception ex) {
-            out.println("Pop3Agent.getMessageList() : exception = " + ex); // S106
+            log.error("Pop3Agent.getMessageList() : exception = " + ex); // S106
         }
     }
 

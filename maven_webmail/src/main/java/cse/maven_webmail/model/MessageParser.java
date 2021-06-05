@@ -13,6 +13,8 @@ import javax.mail.Multipart;
 import javax.mail.Part;
 import javax.mail.internet.MimeUtility;
 import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  *
@@ -30,6 +32,7 @@ public class MessageParser {
     private String fileName;
     private String downloadTempDir = "C:/temp/download/";
     private String userid;
+    private Log log = null;
 
     public MessageParser(Message message, String userid) {
         this.message = message;
@@ -46,6 +49,7 @@ public class MessageParser {
                 f.mkdir();
             }
         }
+        log = LogFactory.getLog(MessageParser.class);
     }
 
     public boolean parse(boolean parseBody) {
@@ -61,7 +65,7 @@ public class MessageParser {
             status = true;
             return status; // ADD JEONGEUN
         } catch (Exception ex) {
-            out.println("MessageParser.parse() - Exception : " + ex); // S106
+            log.error("MessageParser.parse() - Exception : " + ex); // S106
             status = false;
             return status; // ADD JEONGEUN
         }
@@ -88,7 +92,7 @@ public class MessageParser {
                 || disp.equalsIgnoreCase(Part.INLINE))) {  // 첨부 파일
             fileName = MimeUtility.decodeText(p.getFileName());
             if (fileName != null) {
-                out.println("MessageParser.getPart() : file = " + fileName); // S106
+                log.info("MessageParser.getPart() : file = " + fileName); // S106
                 // 첨부 파일을 서버의 내려받기 임시 저장소에 저장
                 String tempUserDir = this.downloadTempDir + File.separator + this.userid;
                 File dir = new File(tempUserDir);

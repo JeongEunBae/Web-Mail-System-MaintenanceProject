@@ -5,6 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page errorPage="error_page.jsp"%>
 
 <!DOCTYPE html>
 
@@ -24,7 +25,7 @@
         <link type="text/css" rel="stylesheet" href="css/main_style.css" />
     </head>
     <body onload="setTimeout('gohome()', 5000)">
-        <jsp:include page="header.jsp" />
+        <%@include file="header.jspf"%>
         
         <p id="reset_passwd_fail">
             비밀번호 재설정에 실패하였습니다. <br/>
@@ -37,7 +38,6 @@
             <a href="<%= getServletContext().getInitParameter("HomeDirectory") %>" title="초기화면">초기 화면</a>을 선택해주세요.
         </p>
         
-        <jsp:include page="footer.jsp" />
-        
+        <%@include file="footer.jspf"%>
     </body>
 </html>

@@ -7,6 +7,7 @@
 <%@page import="cse.maven_webmail.control.CommandType"%>
 <%@page import="java.sql.Connection"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page errorPage="error_page.jsp"%>
 <%@page import = "java.sql.*"%>
 
 <!DOCTYPE html>

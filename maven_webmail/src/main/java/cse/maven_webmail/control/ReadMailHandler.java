@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import cse.maven_webmail.model.Pop3Agent;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 //S1128
 
 /**
@@ -25,7 +27,7 @@ import cse.maven_webmail.model.Pop3Agent;
 public class ReadMailHandler extends HttpServlet {
     private static final String CHARACTER_ENCODING_SET = "UTF-8"; // ADD JEONGEUN
 
-    private static Logger logger = LoggerFactory.getLogger(ReadMailHandler.class);// ADD JEONGEUN
+    private Log logger = LogFactory.getLog(ReadMailHandler.class);// ADD JEONGEUN
     private static final String USER_ID = "userid"; // S1192
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.

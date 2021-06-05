@@ -6,6 +6,8 @@
 
 <%@page import="cse.maven_webmail.model.ResetPasswordAgent"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page errorPage="error_page.jsp"%>
+
 <!DOCTYPE html>
 
 <script type="text/javascript">

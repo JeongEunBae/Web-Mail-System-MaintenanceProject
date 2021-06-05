@@ -6,6 +6,9 @@ package cse.maven_webmail.model;
 
 import com.sun.mail.smtp.SMTPMessage;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.DirectoryNotEmptyException;
+import java.nio.file.NoSuchFileException;
 import java.util.Properties;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -152,7 +155,7 @@ public class SmtpAgent {
             {
 
                 Files.delete(this.file1); //S4042
-
+            }
             status = true;                 // 전송 완료되었으므로 status를 true로 바꿈.
         }
         catch (RuntimeException e)

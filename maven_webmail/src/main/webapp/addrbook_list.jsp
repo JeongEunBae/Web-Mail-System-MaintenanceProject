@@ -6,6 +6,8 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="java.sql.*"%>
+<%@page errorPage="error_page.jsp"%>
+
 <!DOCTYPE html>
 <html>
     <head>

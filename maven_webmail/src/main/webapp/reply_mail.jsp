@@ -5,6 +5,7 @@
 --%>
 
 <%@page language="java" contentType="text/html; charset=utf-8" pageEncoding="UTF-8"%>
+<%@page errorPage="error_page.jsp"%>
 <%@page import="cse.maven_webmail.control.CommandType" %>
 
 <!DOCTYPE html>

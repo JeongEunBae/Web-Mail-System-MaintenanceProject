@@ -4,6 +4,8 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page errorPage="error_page.jsp"%>
+
 <%@page import="cse.maven_webmail.control.CommandType" %>
 <%@page import="cse.maven_webmail.model.UserAdminAgent" %>
 

@@ -5,9 +5,11 @@
 --%>
 
 
-<%@page import="cse.maven_webmail.control.CommandType"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page errorPage="error_page.jsp"%>
+
 <%@page import = "java.sql.*"%>
+<%@page import="cse.maven_webmail.control.CommandType"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -24,12 +26,12 @@
              </center>
              <form name="AddUser" action="UserAddhandler.do?menu=<%= CommandType.ADD_USER_COMMAND%>" method="POST">
                 <center>
-                아이디 :  <input type="text" name="register_id" size="20"> <br /><br />
-                비밀번호:  <input type="password" name="register_pw" id="register_pw" onchange="check_pw()" size="20"><br /><br />
-                비밀번호 확인 :  <input type="password" name="register_pw_check" id="register_pw_check" onchange="check_pw()" size="20"> <br />
+                아이디 :  <input type="text" name="register_id" size="20" required> <br /><br />
+                비밀번호:  <input type="password" name="register_pw" id="register_pw" onchange="check_pw()" size="20" required><br /><br />
+                비밀번호 확인 :  <input type="password" name="register_pw_check" id="register_pw_check" onchange="check_pw()" size="20" required> <br />
                 <span id="check"></span> <br/><br/>
-                이름: <input type="text" name="register_name" size="10"> <br /><br />
-                전화번호 :  <input type="tel" name="register_number" size="10"> <br /><br />
+                이름: <input type="text" name="register_name" size="10" required> <br /><br />
+                전화번호 :  <input type="tel" name="register_number" size="10" required> <br /><br />
                  <div>
               <input type="submit" value="확인" name ="register_ok" onClick ="return getConfirmResult()">
               <input type="reset" value="다시 입력" name="reset_1">

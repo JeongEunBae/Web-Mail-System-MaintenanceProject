@@ -22,9 +22,9 @@ public class ResetPasswordAgent extends UserAdminAgent {
     private OutputStream os = null;
     private boolean isConnected = false;
     private static final String EOL = "\r\n";
-    Log log = null;
+    private Log log = null;
     
-    public ResetPasswordAgent(String server, int port, String cwd){
+    public ResetPasswordAgent(String server, int port, String cwd) throws Exception{
         super(server, port, cwd);
         log = LogFactory.getLog(ResetPasswordAgent.class);
         log.info("ResetPasswordAgent create: server= " + server + ", port= " + port);

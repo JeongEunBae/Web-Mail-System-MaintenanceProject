@@ -5,6 +5,7 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="cse.maven_webmail.control.CommandType" %>
+<%@page errorPage="error_page.jsp"%>
 
 <!DOCTYPE html>
 
@@ -29,11 +30,11 @@
                 <table border="0" align="left">
                     <tr>
                         <td>사용자 ID</td>
-                        <td> <input type="text" name="id" value="" size="20" />  </td>
+                        <td> <input type="text" name="id" value="" size="20" required/>  </td>
                     </tr>
                     <tr>
                         <td>암호 </td>
-                        <td> <input type="password" name="password" value="" /> </td>
+                        <td> <input type="password" name="password" value="" required/> </td>
                     </tr>
                     <tr>
                         <td colspan="2">
