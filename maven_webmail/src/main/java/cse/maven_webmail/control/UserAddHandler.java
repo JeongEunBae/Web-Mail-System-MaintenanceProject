@@ -92,6 +92,9 @@ public class UserAddHandler extends HttpServlet {
             int queryState = pstmt.executeUpdate();
 
             name = "java:/comp/env/jdbc/fakeletter";
+            ctx = new javax.naming.InitialContext();
+            ds = (javax.sql.DataSource) ctx.lookup(name);
+            conn = ds.getConnection();
             sql = "INSERT INTO fakeletter(userid) VALUES(?)";
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, registerId);

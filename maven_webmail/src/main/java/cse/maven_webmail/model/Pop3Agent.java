@@ -9,7 +9,6 @@ import java.util.Properties;
 import java.sql.*;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import javax.mail.FetchProfile;
 import javax.mail.Flags;
@@ -17,7 +16,6 @@ import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.Session;
 import javax.mail.Store;
-import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -72,9 +70,7 @@ public class Pop3Agent {
     }
 
 
-    public boolean deleteMessage(int msgid, boolean reallyDelete) { // MODIFY JEONGEUN
-        log.trace("======================deleteMessage===================="); // S106
-        
+    public boolean deleteMessage(int msgid, boolean reallyDelete) { // MODIFY JEONGEUN        
         boolean status = false;
 
         if (!connectToStore()) {
@@ -121,7 +117,6 @@ public class Pop3Agent {
     }
     
     public boolean deleteMessageFake(int msgid){
-        log.trace("======================deleteMessageFake====================");
         boolean status = false;
         
         if (!connectToStore()) {
@@ -139,7 +134,6 @@ public class Pop3Agent {
         log.info(fake_num_list.size());
         
         // 가져온 메시지의 개수가 30개면 가장 앞 번호의 메시지 영구 삭제.
-        // TODO
         if(messageCount == 30){
             deleteMessage(fake_num_list.get(0), true);
             fake_num_list.remove(0);
@@ -147,7 +141,6 @@ public class Pop3Agent {
             // 리스트에서 삭제된 메시지번호 지우기 
         }
         // 가져온 메시지 리스트에 msgid를 새로 추가하고 DB에 등록
-        // TODO
         int count = 0;
         for(int num : fake_num_list){
             if(msgid+messageCount > num){
@@ -369,7 +362,6 @@ public class Pop3Agent {
     }
     
     private boolean getListFromDB() throws SQLException{
-        log.info("=============getListFromDB===========");
         boolean status = false;
         //TODO
         Connection conn = null;
@@ -404,12 +396,10 @@ public class Pop3Agent {
         } catch(Exception e) {
             log.error(e.getStackTrace());
         }
-        log.info("-----------getListFromDB--------------------");
         return status;
     }
     
     private boolean saveListToDB() throws SQLException{
-        log.trace("=============saveListToDB===========");
         boolean status = false;
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -439,7 +429,6 @@ public class Pop3Agent {
             if(conn != null)
                 conn.close();
         }
-        log.info("--------------saveListToDB--------------");
         return status;
     }
     

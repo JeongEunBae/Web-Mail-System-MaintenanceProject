@@ -6,7 +6,6 @@ package cse.maven_webmail.model;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import static java.lang.System.out;
 import javax.activation.DataHandler;
 import javax.mail.Address;
 import javax.mail.Message;
@@ -135,18 +134,18 @@ public class MessageParser {
     }
 
     private void printMessage(boolean printBody) {
-        out.println("From: " + fromAddress); // S106
-        out.println("To: " + toAddress); // S106
-        out.println("CC: " + ccAddress); // S106
-        out.println("Date: " + sentDate); // S106
-        out.println("Subject: " + subject); // S106
+        log.info("From: " + fromAddress); // S106
+        log.info("To: " + toAddress); // S106
+        log.info("CC: " + ccAddress); // S106
+        log.info("Date: " + sentDate); // S106
+        log.info("Subject: " + subject); // S106
 
         if (printBody) {
-            out.println("본 문");
-            out.println("---------------------------------");
-            out.println(body);
-            out.println("---------------------------------");
-            out.println("첨부파일: " + fileName);
+            log.info("본 문");
+            log.info("---------------------------------");
+            log.info(body);
+            log.info("---------------------------------");
+            log.info("첨부파일: " + fileName);
         }
     }
 

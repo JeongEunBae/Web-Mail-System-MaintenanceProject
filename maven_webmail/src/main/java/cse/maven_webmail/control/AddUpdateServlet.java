@@ -71,10 +71,6 @@ public class AddUpdateServlet extends HttpServlet {
                     pstmt.setInt(4, idx);
 
                     pstmt.executeUpdate(); // 테이블에 변화가 생길때만 사용함
-                    //S4087
-
-                    // TEST
-                    // S125
                     response.sendRedirect("addrbook_list.jsp");
                 }
 
