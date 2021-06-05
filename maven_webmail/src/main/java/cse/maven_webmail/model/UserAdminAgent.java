@@ -4,12 +4,12 @@
  */
 package cse.maven_webmail.model;
 
-
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import static java.lang.System.out;
 import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,15 +31,15 @@ public class UserAdminAgent {
     InputStream is = null;
     OutputStream os = null;
     boolean isConnected = false;
-    private String ROOT_ID;  
-    private String ROOT_PASSWORD;  
-    private String ADMIN_ID; 
+    private String ROOT_ID;
+    private String ROOT_PASSWORD;
+    private String ADMIN_ID;
     private static final String EOL = "\r\n";
     String cwd;
-    Log log = LogFactory.getLog(UserAdminAgent.class); 
-    
+    Log log = LogFactory.getLog(UserAdminAgent.class);
+
     public UserAdminAgent(String server, int port, String cwd) throws Exception {
-        
+
         log.info("UserAdminAgent created: server = " + server + ", port = " + port);
         this.server = server;  // 127.0.0.1
         this.port = port;  // 4555
@@ -57,22 +57,34 @@ public class UserAdminAgent {
     private void initialize() {
         // property 읽는 방법 맞는지? getClass().getResourceAsStream() 사용해 보면...
         Properties props = new Properties();
-        String propertyFile =  this.cwd + "/WEB-INF/classes/config/system.properties";
+        String propertyFile = this.cwd + "/WEB-INF/classes/config/system.properties";
         propertyFile = propertyFile.replace("\\", "/");
+<<<<<<< HEAD
         log.info("prop path = " + propertyFile); // S106
             
         try (BufferedInputStream bis =
                 new BufferedInputStream(
+=======
+        out.printf("prop path = %s%n", propertyFile); // S106
+
+        try (BufferedInputStream bis
+                = new BufferedInputStream(
+>>>>>>> origin/hotfix
                         new FileInputStream(propertyFile))) {
             props.load(bis);
             ROOT_ID = props.getProperty("root_id");
             ROOT_PASSWORD = props.getProperty("root_password");
             ADMIN_ID = props.getProperty("admin_id");
+<<<<<<< HEAD
             log.info(String.format("ROOT_ID = %s\nROOT_PASS = %s\n", ROOT_ID, ROOT_PASSWORD)); // S106 , 3457
              
+=======
+            out.printf(String.format("ROOT_ID = %s\nROOT_PASS = %s\n", ROOT_ID, ROOT_PASSWORD)); // S106 , 3457
+
+>>>>>>> origin/hotfix
         } catch (IOException ioe) {
-             log.error("UserAdminAgent: 초기화 실패 - " + ioe.getMessage());
-            
+            log.error("UserAdminAgent: 초기화 실패 - " + ioe.getMessage());
+
         }
 
     }
@@ -85,7 +97,7 @@ public class UserAdminAgent {
         String recvMessage = "";
         byte[] messageBuffer = new byte[1024];
 
-         log.info("addUser() called");
+        log.info("addUser() called");
         if (!isConnected) {
             return status;
         }
@@ -97,12 +109,28 @@ public class UserAdminAgent {
 
             // 2: response for "adduser" command
             java.util.Arrays.fill(messageBuffer, (byte) 0);
-            
+
             int count = 0;
             while ((count = is.read(messageBuffer)) > 0) { // S2674
+<<<<<<< HEAD
                 recvMessage = new String(messageBuffer); 
+=======
+                String recvMessage = new String(messageBuffer);
+>>>>>>> origin/hotfix
                 log.info(recvMessage);
+
+                // 3: 기존 메일사용자 여부 확인
+                if (recvMessage.contains("added")) {
+                    status = true;
+                } else {
+                    status = false;
+                }
+                // 4: 연결 종료
+                quit();
+                out.flush();// for test // S106
+                socket.close();
             }
+<<<<<<< HEAD
             
             // 3: 기존 메일사용자 여부 확인
             if (recvMessage.contains("added")) {
@@ -113,13 +141,15 @@ public class UserAdminAgent {
             // 4: 연결 종료
             quit();
             socket.close();
+=======
+>>>>>>> origin/hotfix
             return status; // S1143
         } catch (Exception ex) {
             log.error(ex.toString());
             status = false;
             return status;
         }
-    }  
+    }
 
     public List<String> getUserList() {
         List<String> userList = new LinkedList<>();
@@ -138,7 +168,7 @@ public class UserAdminAgent {
             java.util.Arrays.fill(messageBuffer, (byte) 0);
             int count = 0;
             while ((count = is.read(messageBuffer)) > 0) { // S2674
-                String recvMessage = new String(messageBuffer); 
+                String recvMessage = new String(messageBuffer);
                 log.info(recvMessage);
             }
 
@@ -192,14 +222,14 @@ public class UserAdminAgent {
             for (String userId : userList) {
                 // 1: "deluser" 명령 송신
                 command = "deluser " + userId + EOL;
-                int writeCount = 0;
-                while ((writeCount = os.write(command.getBytes())) > 0) { // S2674
-                    log.info(command);
-                }           
+
+                os.write(command.getBytes());
+
+                log.info(command);
                 // 2: 응답 메시지 수신
                 java.util.Arrays.fill(messageBuffer, (byte) 0);
                 int readCount = 0;
-                while((readCount = is.read(messageBuffer)) > 0) { // S2674
+                while ((readCount = is.read(messageBuffer)) > 0) { // S2674
                 }
 
                 // 3: 응답 메시지 분석
@@ -208,8 +238,9 @@ public class UserAdminAgent {
                 if (recvMessage.contains("deleted")) {
                     status = true;
                 }
+                quit();
             }
-            quit();
+
             return status; // S1143
         } catch (Exception ex) {
             log.error(ex);
@@ -224,22 +255,20 @@ public class UserAdminAgent {
         try {
             // --> verify userid
             String verifyCommand = "verify " + userid;
-            int count = 0;
-            while((count = os.write(verifyCommand.getBytes())) > 0) {
-            }
+            os.write(verifyCommand.getBytes());
 
             // read the result for verify command
             // <-- User userid exists   or
             // <-- User userid does not exist
             int readCount = 0;
-            while((readCount = is.read(messageBuffer)) > 0) { // S2674
+            while ((readCount = is.read(messageBuffer)) > 0) { // S2674
+                String recvMessage = new String(messageBuffer);
+                if (recvMessage.contains("exists")) {
+                    status = true;
+                    quit();  // quit command
+                }
             }
-            String recvMessage = new String(messageBuffer);
-            if (recvMessage.contains("exists")) {
-                status = true;
-            }
-                
-            quit();  // quit command
+
             return status; // S1143
         } catch (IOException ex) {
             log.error(ex);
@@ -247,8 +276,12 @@ public class UserAdminAgent {
         }
     }
 
+<<<<<<< HEAD
     private boolean connect(){ try {
         //S112
+=======
+    private boolean connect() throws IOException { //S112
+>>>>>>> origin/hotfix
         byte[] messageBuffer = new byte[1024];
         boolean returnVal = false;
         String sendMessage;
@@ -258,6 +291,7 @@ public class UserAdminAgent {
         // root 인증: id, passwd - default: root
         // 1: Login Id message 수신
         int readCount = 0;
+<<<<<<< HEAD
         while((readCount = is.read(messageBuffer)) > 0) { // S2674
         }
         String recvMessage = new String(messageBuffer);
@@ -280,22 +314,55 @@ public class UserAdminAgent {
         // 4: rootPassword 송신
         sendMessage = ROOT_PASSWORD + EOL;
         os.write(sendMessage.getBytes());
+=======
+        while ((readCount = is.read(messageBuffer)) > 0) { // S2674
+            String recvMessage = new String(messageBuffer);
+            log.info(recvMessage);
 
-        // 5: welcome message 수신
-        java.util.Arrays.fill(messageBuffer, (byte) 0);
+            // 2: rootId 송신
+            sendMessage = ROOT_ID + EOL;
+            os.write(sendMessage.getBytes());
 
+            // 3: Password message 수신
+            java.util.Arrays.fill(messageBuffer, (byte) 0);
+>>>>>>> origin/hotfix
+
+            int readCount1 = 0;
+            while ((readCount1 = is.read(messageBuffer)) > 0) { // S2674
+                recvMessage = new String(messageBuffer);
+                log.info(recvMessage);
+
+<<<<<<< HEAD
         readCount = 0;
         while((readCount = is.read(messageBuffer)) > 0) { // S2674
         }
         recvMessage = new String(messageBuffer);
+=======
+                // 4: rootPassword 송신
+                sendMessage = ROOT_PASSWORD + EOL;
+                os.write(sendMessage.getBytes());
 
-        log.info(recvMessage);
+                // 5: welcome message 수신
+                java.util.Arrays.fill(messageBuffer, (byte) 0);
 
-        if (recvMessage.contains("Welcome")) {
-            returnVal = true;
-        } else {
-            returnVal = false;
+                int readCount2 = 0;
+                while ((readCount2 = is.read(messageBuffer)) > 0) { // S2674
+                    recvMessage = new String(messageBuffer);
+
+                    log.info(recvMessage);
+
+                    if (recvMessage.contains("Welcome")) {
+                        returnVal = true;
+                    } else {
+                        returnVal = false;
+                    }
+                }
+>>>>>>> origin/hotfix
+
+            }
+
         }
+
         return returnVal;
         } // connect()
         catch (IOException ex) {
@@ -310,14 +377,11 @@ public class UserAdminAgent {
         try {
             // 1: quit 명령 송신
             String quitCommand = "quit" + EOL;
-            int writeCount = 0;
-            while((os.write(quitCommand.getBytes()) > 0) { // S2674
-            }
-            
+            os.write(quitCommand.getBytes());
             // 2: quit 명령에 대한 응답 수신
             java.util.Arrays.fill(messageBuffer, (byte) 0);
             if (is.available() > 0) {
-            is.read(messageBuffer);
+                is.read(messageBuffer);
             }
             // 3: 메시지 분석
             String recvMessage = new String(messageBuffer);
@@ -328,6 +392,7 @@ public class UserAdminAgent {
                 status = false;
             }
             return status; // S1143
+
         } catch (IOException ex) {
             log.error("UserAdminAgent.quit() " + ex);
             return status; // S1143
@@ -361,5 +426,5 @@ public class UserAdminAgent {
     public String getADMIN_ID() {
         return ADMIN_ID;
     }
- 
+
 }

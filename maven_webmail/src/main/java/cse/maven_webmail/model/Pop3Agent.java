@@ -39,7 +39,7 @@ public class Pop3Agent {
     private Log log = null;
     private List<Integer> fake_num_list = null;
     // S1068
-
+    Log log = LogFactory.getLog(Pop3Agent.class);
     private static final String FOLDER_NAME = "INBOX"; // ADD JEONGEUN
     //private static Logger logger = LoggerFactory.getLogger(Pop3Agent.class);// ADD JEONGEUN
 
@@ -74,6 +74,11 @@ public class Pop3Agent {
 
 
     public boolean deleteMessage(int msgid, boolean reallyDelete) { // MODIFY JEONGEUN
+<<<<<<< HEAD
+=======
+        log.trace("======================deleteMessage===================="); // S106
+
+>>>>>>> origin/hotfix
         boolean status = false;
 
         if (!connectToStore()) {
@@ -81,7 +86,11 @@ public class Pop3Agent {
         }
         try {
             if(!getListFromDB()){
+<<<<<<< HEAD
                 log.info("deleteMessage DB");
+=======
+                log.error("deleteMessage DB");
+>>>>>>> origin/hotfix
             }
         } catch (SQLException ex) { // 
             log.error("deleteMessage() error: " + ex);
@@ -97,6 +106,10 @@ public class Pop3Agent {
         } catch (SQLException ex) {
             log.error("deleteMessage() error: " + ex);
         }
+<<<<<<< HEAD
+=======
+        log.info(realMsgid);
+>>>>>>> origin/hotfix
         try {
             // Folder 설정
             Folder folder = store.getFolder(FOLDER_NAME); // ADD JEONGEUN
@@ -121,19 +134,34 @@ public class Pop3Agent {
     }
     
     public boolean deleteMessageFake(int msgid){
+<<<<<<< HEAD
+=======
+        log.trace("======================deleteMessageFake====================");
+>>>>>>> origin/hotfix
         boolean status = false;
         
         if (!connectToStore()) {
             return status;
         }
         try {
+<<<<<<< HEAD
             getListFromDB();
+=======
+            if (!getListFromDB()){
+                log.error("db 오류");
+            }
+>>>>>>> origin/hotfix
         } catch (SQLException ex) {
             log.error(ex.getStackTrace());
         }
         
         int messageCount = fake_num_list.size();
         
+<<<<<<< HEAD
+=======
+        log.info("messageCount: ");
+        log.info(fake_num_list.size());
+>>>>>>> origin/hotfix
         
         // 가져온 메시지의 개수가 30개면 가장 앞 번호의 메시지 영구 삭제.
         // TODO
@@ -153,8 +181,17 @@ public class Pop3Agent {
         }
         fake_num_list.add(msgid+count-1);
         try{
+<<<<<<< HEAD
             saveListToDB();
         } catch (SQLException ex){
+=======
+            if(!saveListToDB()){
+                log.error("db 오류");
+            }
+        } catch (SQLException ex){
+            log.error("deleteMessageFake's saveListToDB StackTrace: ");
+            log.error(ex.getStackTrace());
+>>>>>>> origin/hotfix
             log.error("Pop3Agent.getMessageList() : exception = " + ex);
         }
         status = true;
@@ -174,7 +211,13 @@ public class Pop3Agent {
         }
 
         try {
+<<<<<<< HEAD
             getListFromDB();
+=======
+            if(!getListFromDB()){
+                log.error("DB연결 오류");
+            }
+>>>>>>> origin/hotfix
         } catch (Exception e) {
             log.error(e.getStackTrace());
         }
@@ -186,6 +229,13 @@ public class Pop3Agent {
             // 현재 수신한 메시지 모두 가져오기
             messages = folder.getMessages();      // 3.4
             
+<<<<<<< HEAD
+=======
+            for(Message msg : messages){
+                log.info("msg.getMessageNumber(): ");
+                log.info(msg.getMessageNumber());
+            }
+>>>>>>> origin/hotfix
             int size = messages.length;
             Message[] tmp_messages = new Message[size-fake_num_list.size()];
             
@@ -205,6 +255,12 @@ public class Pop3Agent {
                 }
             }
             
+<<<<<<< HEAD
+=======
+            log.info("----------------------걸러낼 목록: ");
+            log.info(temp);
+            
+>>>>>>> origin/hotfix
             FetchProfile fp = new FetchProfile();
             // From, To, Cc, Bcc, ReplyTo, Subject & Date
             fp.add(FetchProfile.Item.ENVELOPE);
@@ -291,7 +347,7 @@ public class Pop3Agent {
         }
     }
     
-    public String getTrashMessageList(){
+    public String getTrashMessageList() throws SQLException{
         String result = "POP3  서버 연결이 되지 않아 메시지를 볼 수 없습니다.";
         
         if (!connectToStore()) {
@@ -299,6 +355,7 @@ public class Pop3Agent {
             return result;
         }
         
+<<<<<<< HEAD
         try {
             getListFromDB();
         } catch (SQLException ex) {
@@ -306,6 +363,14 @@ public class Pop3Agent {
         }
             
         int numListCount = fake_num_list.size();       //임시로 삭제된 메일번호 목록의 개수
+=======
+        if(!getListFromDB()){
+                return "DB 서버 연결이 되지 않아 메시지를 볼 수 없습니다.";
+        }
+            
+        int numListCount = fake_num_list.size();       //임시로 삭제된 메일번호 목록의 개수
+        log.info(numListCount);
+>>>>>>> origin/hotfix
         Message[] messages = new Message[numListCount];
         
         try{
@@ -313,6 +378,10 @@ public class Pop3Agent {
             folder.open(Folder.READ_ONLY);
             
             for(int i=0; i<numListCount; i++){
+<<<<<<< HEAD
+=======
+                log.info(fake_num_list.get(i)+1);
+>>>>>>> origin/hotfix
                 messages[i] = folder.getMessage(fake_num_list.get(i)+1);
             }
             
@@ -356,6 +425,10 @@ public class Pop3Agent {
     }
     
     private boolean getListFromDB() throws SQLException{
+<<<<<<< HEAD
+=======
+        log.info("=============getListFromDB===========");
+>>>>>>> origin/hotfix
         boolean status = false;
         //TODO
         Connection conn = null;
@@ -368,17 +441,32 @@ public class Pop3Agent {
             conn = ds.getConnection();
             stmt = conn.createStatement();
             String sql = "SELECT list FROM fakeletter WHERE id=\'" + userid + "\'";
+<<<<<<< HEAD
+=======
+            log.info("sql: " + sql);
+>>>>>>> origin/hotfix
             rs = stmt.executeQuery(sql);
             
             String list="";
             while(rs.next()){
                 list = rs.getString("list");
+<<<<<<< HEAD
+=======
+                log.info(list);
+>>>>>>> origin/hotfix
             }
             list = list.replace("[", "");
             list = list.replace("]", "");
             for(String str : list.split(", ")){
+<<<<<<< HEAD
                 fake_num_list.add(Integer.parseInt(str));
             }
+=======
+                log.info(str);
+                fake_num_list.add(Integer.parseInt(str));
+            }
+            log.info(fake_num_list);
+>>>>>>> origin/hotfix
             status = true;
 
             rs.close(); // S2095
@@ -388,15 +476,30 @@ public class Pop3Agent {
             log.error(e.getStackTrace());
         }
         
+<<<<<<< HEAD
+=======
+        log.info("-----------getListFromDB--------------------");
+>>>>>>> origin/hotfix
         return status;
     }
     
     private boolean saveListToDB() throws SQLException{
+<<<<<<< HEAD
+=======
+        log.trace("=============saveListToDB===========");
+>>>>>>> origin/hotfix
         boolean status = false;
         Connection conn = null;
         PreparedStatement pstmt = null;
         fake_num_list.sort(Comparator.naturalOrder());
         String list = fake_num_list.toString().replace("[^0-9,]", "");
+<<<<<<< HEAD
+=======
+        log.info("fake_num_list: ");
+        log.info(fake_num_list);
+        log.info("list: " + list);
+        
+>>>>>>> origin/hotfix
         
         try{
             javax.naming.Context ctx = new javax.naming.InitialContext();
@@ -407,6 +510,10 @@ public class Pop3Agent {
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, list);
             pstmt.setString(2, userid);
+<<<<<<< HEAD
+=======
+            log.info("sql: " + sql);
+>>>>>>> origin/hotfix
             pstmt.executeUpdate();
             status = true;
         } catch(Exception e) {
@@ -417,6 +524,10 @@ public class Pop3Agent {
             if(conn != null)
                 conn.close();
         }
+<<<<<<< HEAD
+=======
+        log.info("--------------saveListToDB--------------");
+>>>>>>> origin/hotfix
         return status;
     }
     

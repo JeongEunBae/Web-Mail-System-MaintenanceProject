@@ -6,9 +6,14 @@ package cse.maven_webmail.model;
 
 import com.sun.mail.smtp.SMTPMessage;
 import java.io.File;
+<<<<<<< HEAD
 import java.io.IOException;
 import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.NoSuchFileException;
+=======
+import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+>>>>>>> origin/hotfix
 import java.util.Properties;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -24,6 +29,8 @@ import javax.mail.internet.MimeUtility;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
 
 /**
  *
@@ -40,7 +47,7 @@ public class SmtpAgent {
     protected String subj = null;           // 제목
     protected String body = null;            // 본문
     protected String file1 = null;           // 첨부 파일
-
+    
     public SmtpAgent(String host, String userid) {
         this.host = host;
         this.userid = userid;
@@ -93,7 +100,7 @@ public class SmtpAgent {
     //              없을 경우 메일 전송이 송신주소가 없어서 걸러짐.
     public static final String SMTPAGENTCODE = "mail.smtp.host";
     
-    public boolean sendMessage()
+    public boolean sendMessage() throws AddressException, MessagingException, UnsupportedEncodingException
     {
         SMTPLOG.setLevel(Level.INFO);
         SMTPLOG.severe("severe thing");
@@ -155,8 +162,14 @@ public class SmtpAgent {
             {
 
                 Files.delete(this.file1); //S4042
+<<<<<<< HEAD
             }
             status = true;                 // 전송 완료되었으므로 status를 true로 바꿈.
+=======
+
+                status = true;                 // 전송 완료되었으므로 status를 true로 바꿈.
+            }
+>>>>>>> origin/hotfix
         }
         catch (RuntimeException e)
         {

@@ -19,6 +19,7 @@ import org.apache.commons.logging.LogFactory;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 /**
  *
  * @author chung
@@ -34,11 +35,10 @@ public class ResetPasswordHandler extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    
     private String userid = "";
     private String passwd = "";
     Log log = LogFactory.getLog(ResetPasswordHandler.class);
-    
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
@@ -47,69 +47,71 @@ public class ResetPasswordHandler extends HttpServlet {
         ResultSet rs = null;
         try (PrintWriter out = response.getWriter()) {
             request.setCharacterEncoding("UTF-8");
-            
+
             userid = request.getParameter("userid");
             passwd = request.getParameter("password");
             String inputname = request.getParameter("username");
-            
+
             String username = ""; // 데이터베이스의 이름 가져오기
             String name = "java:/comp/env/jdbc/passwd_reset";
             javax.naming.Context ctx = new javax.naming.InitialContext();
             javax.sql.DataSource ds = (javax.sql.DataSource) ctx.lookup(name);
-            
-            try(conn = ds.getConnection()) { // S2095
-                try(stmt = conn.createStatement()) {
-                    String sql = "SELECT name FROM passwd_reset WHERE id=" + "\'" + userid + "\'";
 
-                    rs = stmt.executeQuery(sql);
+            conn = ds.getConnection(); // S2095
+            stmt = conn.createStatement();
 
-                    while(rs.next()){
-                        username = rs.getString("name");
-                    }
+            String sql = "SELECT name FROM passwd_reset WHERE id=" + "\'" + userid + "\'";
 
-                    if(userid == null || passwd == null || !inputname.equals(username)){
-                        RequestDispatcher view = request.getRequestDispatcher("reset_passwd_fail.jsp");
-                        view.forward(request, response);
-                    } else {
-                        resetPasswd(request, response, out);
-                    }
-                }
+            rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                username = rs.getString("name");
             }
-            
-        } catch (Exception ex){
+
+            if (userid == null || passwd == null || !inputname.equals(username)) {
+                RequestDispatcher view = request.getRequestDispatcher("reset_passwd_fail.jsp");
+                view.forward(request, response);
+            } else {
+                resetPasswd(request, response, out);
+            }
+
+        } catch (Exception ex) {
             log.error("ResetPasswordHandler error: " + ex);
         } finally {
-            if(rs != null)
+            if (rs != null) {
                 rs.close();
-            if(stmt != null)
+            }
+            if (stmt != null) {
                 stmt.close();
-            if(conn != null)
+            }
+            if (conn != null) {
                 conn.close();
+            }
         }
     }
-    
-    private boolean resetPasswd(HttpServletRequest request, HttpServletResponse response, PrintWriter out){
+
+    private boolean resetPasswd(HttpServletRequest request, HttpServletResponse response, PrintWriter out) {
         String server = request.getServerName();
         boolean status = false;
         int port = 4555;
-        try{
+        try {
             ResetPasswordAgent agent = new ResetPasswordAgent(server, port, this.getServletContext().getRealPath("."));
-            if(agent.resetPasswd(userid, passwd)){
+            if (agent.resetPasswd(userid, passwd)) {
                 out.print(getResetSuccessPopup());
                 status = true;
             } else {
                 RequestDispatcher view = request.getRequestDispatcher("reset_passwd_fail.jsp");
                 view.forward(request, response);
             }
-        } catch (Exception ex){
+        } catch (Exception ex) {
             log.error("ResetPasswordCheck - ResetPassword error: " + ex);
         } finally {
             out.close();
         }
         return status;
     }
-    
-    private String getResetSuccessPopup(){
+
+    private String getResetSuccessPopup() {
         String alertMessage = "비밀번호 재설정이 완료되었습니다.";
         StringBuilder successPopUp = new StringBuilder();
         successPopUp.append("<html>");

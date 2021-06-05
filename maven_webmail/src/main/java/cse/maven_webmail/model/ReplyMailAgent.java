@@ -34,7 +34,11 @@ public class ReplyMailAgent {
     // S1068
     private Store store;
     private HttpServletRequest request;
+<<<<<<< HEAD
     private Log log = null;
+=======
+    Log log = LogFactory.getLog(ReplyMailAgent.class);
+>>>>>>> origin/hotfix
 
     public ReplyMailAgent() {
     }
