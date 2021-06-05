@@ -18,6 +18,7 @@ import org.apache.commons.logging.LogFactory;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 // S1128
 
 import javax.servlet.annotation.WebServlet;
@@ -33,6 +34,7 @@ import javax.swing.Popup;
 public class UserAddHandler extends HttpServlet {
 
     Connection conn = null;
+    Statement stmt = null;
     PreparedStatement pstmt = null;
     Log log = LogFactory.getLog(UserAddHandler.class);
 
@@ -65,7 +67,6 @@ public class UserAddHandler extends HttpServlet {
     private void adduser(HttpServletRequest request, PrintWriter out) { // S1172          
                 
         try {
-            String username = ""; // 데이터베이스의 이름 가져오기
             String name = "java:/comp/env/jdbc/user_register";
             javax.naming.Context ctx = new javax.naming.InitialContext();
             javax.sql.DataSource ds = (javax.sql.DataSource) ctx.lookup(name);
@@ -90,6 +91,12 @@ public class UserAddHandler extends HttpServlet {
             
             int queryState = pstmt.executeUpdate();
 
+            name = "java:/comp/env/jdbc/fakeletter";
+            sql = "INSERT INTO fakeletter(userid) VALUES(?)";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, registerId);
+            pstmt.executeUpdate();
+            
             if (queryState >= 1) {
                 StringBuilder popup = new StringBuilder();
                 popup.append("<script>alert('회원가입 완료 승인대기중'); location.href='register_wait.jsp';</script>");

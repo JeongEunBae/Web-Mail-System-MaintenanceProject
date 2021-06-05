@@ -81,12 +81,9 @@ public class Pop3Agent {
             return status;
         }
         try {
-            if(!getListFromDB()){
-                log.info("deleteMessage DB");
-                log.error("deleteMessage DB");
-            }
+            getListFromDB();
         } catch (SQLException ex) { // 
-            log.error("deleteMessage() error: " + ex);
+            log.error("getListFromDB() error: " + ex);
         }
 
         // 가져온 임시 삭제된 메시지 리스트의 msgid-1 번째 있는 메시지가 삭제할 msgid.
@@ -132,9 +129,6 @@ public class Pop3Agent {
         }
         try {
             getListFromDB();
-            if (!getListFromDB()){
-                log.error("db 오류");
-            }
         } catch (SQLException ex) {
             log.error(ex.getStackTrace());
         }
@@ -186,9 +180,6 @@ public class Pop3Agent {
 
         try {
             getListFromDB();
-            if(!getListFromDB()){
-                log.error("DB연결 오류");
-            }
         } catch (Exception e) {
             log.error(e.getStackTrace());
         }
@@ -323,9 +314,6 @@ public class Pop3Agent {
             getListFromDB();
         } catch (SQLException ex) {
             log.error("Pop3Agent.getTrashMessageList() : exception = " + ex);
-        }
-        if(!getListFromDB()){
-                return "DB 서버 연결이 되지 않아 메시지를 볼 수 없습니다.";
         }
             
         int numListCount = fake_num_list.size();       //임시로 삭제된 메일번호 목록의 개수
