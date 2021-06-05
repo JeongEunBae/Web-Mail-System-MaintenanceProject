@@ -59,32 +59,18 @@ public class UserAdminAgent {
         Properties props = new Properties();
         String propertyFile = this.cwd + "/WEB-INF/classes/config/system.properties";
         propertyFile = propertyFile.replace("\\", "/");
-<<<<<<< HEAD
         log.info("prop path = " + propertyFile); // S106
-            
-        try (BufferedInputStream bis =
-                new BufferedInputStream(
-=======
-        out.printf("prop path = %s%n", propertyFile); // S106
 
         try (BufferedInputStream bis
                 = new BufferedInputStream(
->>>>>>> origin/hotfix
                         new FileInputStream(propertyFile))) {
             props.load(bis);
             ROOT_ID = props.getProperty("root_id");
             ROOT_PASSWORD = props.getProperty("root_password");
             ADMIN_ID = props.getProperty("admin_id");
-<<<<<<< HEAD
             log.info(String.format("ROOT_ID = %s\nROOT_PASS = %s\n", ROOT_ID, ROOT_PASSWORD)); // S106 , 3457
-             
-=======
-            out.printf(String.format("ROOT_ID = %s\nROOT_PASS = %s\n", ROOT_ID, ROOT_PASSWORD)); // S106 , 3457
-
->>>>>>> origin/hotfix
         } catch (IOException ioe) {
             log.error("UserAdminAgent: 초기화 실패 - " + ioe.getMessage());
-
         }
 
     }
@@ -111,27 +97,10 @@ public class UserAdminAgent {
             java.util.Arrays.fill(messageBuffer, (byte) 0);
 
             int count = 0;
-            while ((count = is.read(messageBuffer)) > 0) { // S2674
-<<<<<<< HEAD
-                recvMessage = new String(messageBuffer); 
-=======
-                String recvMessage = new String(messageBuffer);
->>>>>>> origin/hotfix
-                log.info(recvMessage);
+            is.read(messageBuffer);
+            recvMessage = new String(messageBuffer);
+            log.info(recvMessage);
 
-                // 3: 기존 메일사용자 여부 확인
-                if (recvMessage.contains("added")) {
-                    status = true;
-                } else {
-                    status = false;
-                }
-                // 4: 연결 종료
-                quit();
-                out.flush();// for test // S106
-                socket.close();
-            }
-<<<<<<< HEAD
-            
             // 3: 기존 메일사용자 여부 확인
             if (recvMessage.contains("added")) {
                 status = true;
@@ -140,13 +109,12 @@ public class UserAdminAgent {
             }
             // 4: 연결 종료
             quit();
+            out.flush();// for test // S106
             socket.close();
-=======
->>>>>>> origin/hotfix
-            return status; // S1143
         } catch (Exception ex) {
             log.error(ex.toString());
             status = false;
+        } finally {
             return status;
         }
     }
@@ -166,12 +134,8 @@ public class UserAdminAgent {
 
             // 2: "listusers" 명령에 대한 응답 수신
             java.util.Arrays.fill(messageBuffer, (byte) 0);
-            int count = 0;
-            while ((count = is.read(messageBuffer)) > 0) { // S2674
-                String recvMessage = new String(messageBuffer);
-                log.info(recvMessage);
-            }
-
+            is.read(messageBuffer);
+            
             // 3: 응답 메시지 처리
             String recvMessage = new String(messageBuffer);
             log.info(recvMessage);
@@ -190,6 +154,7 @@ public class UserAdminAgent {
 
         // 1: 줄 단위로 나누기
         String[] lines = message.split(EOL);
+        log.info(lines);
         // 2: 첫 번째 줄에는 등록된 사용자 수에 대한 정보가 있음.
         //    예) Existing accounts 7
         String[] firstLine = lines[0].split(" ");
@@ -228,9 +193,7 @@ public class UserAdminAgent {
                 log.info(command);
                 // 2: 응답 메시지 수신
                 java.util.Arrays.fill(messageBuffer, (byte) 0);
-                int readCount = 0;
-                while ((readCount = is.read(messageBuffer)) > 0) { // S2674
-                }
+                is.read(messageBuffer);
 
                 // 3: 응답 메시지 분석
                 recvMessage = new String(messageBuffer);
@@ -275,100 +238,46 @@ public class UserAdminAgent {
             return status;
         }
     }
-
-<<<<<<< HEAD
-    private boolean connect(){ try {
-        //S112
-=======
-    private boolean connect() throws IOException { //S112
->>>>>>> origin/hotfix
+    private boolean connect() throws Exception {
         byte[] messageBuffer = new byte[1024];
         boolean returnVal = false;
         String sendMessage;
 
-        log.info("UserAdminAgent.connect() called..."); // S106
+        log.info("UserAdminAgent.connect() called...");
 
         // root 인증: id, passwd - default: root
         // 1: Login Id message 수신
-        int readCount = 0;
-<<<<<<< HEAD
-        while((readCount = is.read(messageBuffer)) > 0) { // S2674
-        }
+        is.read(messageBuffer);
         String recvMessage = new String(messageBuffer);
-        log.info(recvMessage);
-        
+        log.info("recvMessage: " + recvMessage);
+
         // 2: rootId 송신
         sendMessage = ROOT_ID + EOL;
-        int writeCount = 0;
-        while((writeCount = os.write(sendMessage.getBytes())) > 0) { // S2674
-        }
+        os.write(sendMessage.getBytes());
 
         // 3: Password message 수신
         java.util.Arrays.fill(messageBuffer, (byte) 0);
-        readCount = 0;
-        while((readCount = is.read(messageBuffer)) > 0) { // S2674
-        }
+        is.read(messageBuffer);
         recvMessage = new String(messageBuffer);
-        log.info(recvMessage);
-        
+        log.info("recvMessage: " + recvMessage);
+
         // 4: rootPassword 송신
         sendMessage = ROOT_PASSWORD + EOL;
         os.write(sendMessage.getBytes());
-=======
-        while ((readCount = is.read(messageBuffer)) > 0) { // S2674
-            String recvMessage = new String(messageBuffer);
-            log.info(recvMessage);
 
-            // 2: rootId 송신
-            sendMessage = ROOT_ID + EOL;
-            os.write(sendMessage.getBytes());
-
-            // 3: Password message 수신
-            java.util.Arrays.fill(messageBuffer, (byte) 0);
->>>>>>> origin/hotfix
-
-            int readCount1 = 0;
-            while ((readCount1 = is.read(messageBuffer)) > 0) { // S2674
-                recvMessage = new String(messageBuffer);
-                log.info(recvMessage);
-
-<<<<<<< HEAD
-        readCount = 0;
-        while((readCount = is.read(messageBuffer)) > 0) { // S2674
-        }
+        // 5: welcome message 수신
+        java.util.Arrays.fill(messageBuffer, (byte) 0);
+        is.read(messageBuffer);
         recvMessage = new String(messageBuffer);
-=======
-                // 4: rootPassword 송신
-                sendMessage = ROOT_PASSWORD + EOL;
-                os.write(sendMessage.getBytes());
+        log.info("recvMessage: " + recvMessage);
 
-                // 5: welcome message 수신
-                java.util.Arrays.fill(messageBuffer, (byte) 0);
-
-                int readCount2 = 0;
-                while ((readCount2 = is.read(messageBuffer)) > 0) { // S2674
-                    recvMessage = new String(messageBuffer);
-
-                    log.info(recvMessage);
-
-                    if (recvMessage.contains("Welcome")) {
-                        returnVal = true;
-                    } else {
-                        returnVal = false;
-                    }
-                }
->>>>>>> origin/hotfix
-
-            }
-
+        if (recvMessage.contains("Welcome")) {
+            returnVal = true;
+        } else {
+            returnVal = false;
         }
-
         return returnVal;
-        } // connect()
-        catch (IOException ex) {
-            Logger.getLogger(UserAdminAgent.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+    }  // connect()
 
     public boolean quit() {
         byte[] messageBuffer = new byte[1024];

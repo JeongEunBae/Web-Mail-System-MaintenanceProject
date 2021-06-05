@@ -14,8 +14,8 @@
 
 <%
             if (session.isNew()) {
-                session.setAttribute("host", "172.17.104.223");   // should be modified if you change the POP3 server
-                //session.setAttribute("host", application.getInitParameter("host"));   // should be modified if you change the POP3 server
+                //session.setAttribute("host", "172.17.104.223");   // should be modified if you change the POP3 server
+                session.setAttribute("host", application.getInitParameter("host"));   // should be modified if you change the POP3 server
                 session.setAttribute("debug", "false");
                 //session.setAttribute("pageno", "1");
                 //session.setMaxInactiveInterval(session.getMaxInactiveInterval() * 2);
@@ -50,7 +50,6 @@
         </div>           
         <div id="login_form">
             <input type="button" value="비밀번호 재설정" name="B3" onclick="location.href='/maven_webmail/reset_password.jsp'"> <br />
-            <%= 5/0 %>
         </div>
 
         <%@include file="footer.jspf"%>

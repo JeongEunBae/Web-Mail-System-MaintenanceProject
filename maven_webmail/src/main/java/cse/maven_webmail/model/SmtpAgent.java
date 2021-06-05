@@ -6,14 +6,12 @@ package cse.maven_webmail.model;
 
 import com.sun.mail.smtp.SMTPMessage;
 import java.io.File;
-<<<<<<< HEAD
 import java.io.IOException;
 import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.NoSuchFileException;
-=======
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
->>>>>>> origin/hotfix
+import java.nio.file.Path;
 import java.util.Properties;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -39,7 +37,7 @@ import javax.mail.internet.AddressException;
 public class SmtpAgent {
 
     private static final Logger SMTPLOG = Logger.getGlobal();
-    
+
     protected String host = null;
     protected String userid = null;
     protected String to = null;              // 메일 주소
@@ -47,50 +45,64 @@ public class SmtpAgent {
     protected String subj = null;           // 제목
     protected String body = null;            // 본문
     protected String file1 = null;           // 첨부 파일
-    
+
     public SmtpAgent(String host, String userid) {
         this.host = host;
         this.userid = userid;
     }
+
     public String getHost() {
         return host;
     }
+
     public void setHost(String host) {
         this.host = host;
     }
+
     public String getUserid() {
         return userid;
     }
+
     public void setUserid(String userid) {
         this.userid = userid;
     }
+
     public String getTo() {
         return to;
     }
+
     public void setTo(String to) {
         this.to = to;
     }
+
     public String getCc() {
         return cc;
     }
+
     public void setCc(String cc) {
         this.cc = cc;
     }
+
     public String getSubj() {
         return subj;
     }
+
     public void setSubj(String subj) {
         this.subj = subj;
     }
+
     public String getBody() {
         return body;
     }
+
     public void setBody(String body) {
         this.body = body;
     }
+
     public String getFile1() {
         return file1;
     }
+
     public void setFile1(String file1) {
         this.file1 = file1;
     }
@@ -99,14 +111,13 @@ public class SmtpAgent {
     // LJM 100419 - 일반 웹 서버와의 SMTP 동작시 setFrom() 함수 사용 필요함.
     //              없을 경우 메일 전송이 송신주소가 없어서 걸러짐.
     public static final String SMTPAGENTCODE = "mail.smtp.host";
-    
-    public boolean sendMessage() throws AddressException, MessagingException, UnsupportedEncodingException
-    {
+
+    public boolean sendMessage() throws AddressException, MessagingException, UnsupportedEncodingException {
         SMTPLOG.setLevel(Level.INFO);
         SMTPLOG.severe("severe thing");
         SMTPLOG.warning("warning");
         SMTPLOG.info("info");
-        
+
         boolean status = false;           // 현재 전송되지 않았음을 나타내기 위해 false, 전송시 status가 true가 됨.
         // 1. property 설정
         Properties props = System.getProperties();
@@ -117,22 +128,18 @@ public class SmtpAgent {
         Session session = Session.getDefaultInstance(props, null);
         session.setDebug(false);
 
-        try
-        {
+        try {
             SMTPMessage msg = new SMTPMessage(session);
 
             msg.setFrom(new InternetAddress(this.userid));  // 200102 LJM - 테스트 목적으로 수정
 
-            if (this.to.indexOf(';') != -1)
-            {
+            if (this.to.indexOf(';') != -1) {
                 this.to = this.to.replace(";", ",");
             }
             msg.setRecipients(Message.RecipientType.TO, this.to);  // 200102 LJM - 수정
 
-            if (this.cc.length() > 1) 
-            {
-                if (this.cc.indexOf(';') != -1)
-                {
+            if (this.cc.length() > 1) {
+                if (this.cc.indexOf(';') != -1) {
                     this.cc = this.cc.replace(";", ",");
                 }
                 msg.setRecipients(Message.RecipientType.CC, this.cc);
@@ -145,7 +152,7 @@ public class SmtpAgent {
             Multipart mp = new MimeMultipart();
             mp.addBodyPart(mbp);
 
-            if (this.file1 != null)           // 첨부 파일의 존재가 확인되면
+            if (this.file1 != null) // 첨부 파일의 존재가 확인되면
             {
                 MimeBodyPart a1 = new MimeBodyPart();
                 DataSource src = new FileDataSource(this.file1);
@@ -158,32 +165,21 @@ public class SmtpAgent {
             msg.setContent(mp);
             Transport.send(msg);
 
-            if (this.file1 != null)           // 첨부 파일의 존재가 확인되면
+            if (this.file1 != null) // 첨부 파일의 존재가 확인되면
             {
-
-                Files.delete(this.file1); //S4042
-<<<<<<< HEAD
+                File f = new File(this.file1);
+                f.delete(); //S4042
             }
             status = true;                 // 전송 완료되었으므로 status를 true로 바꿈.
-=======
-
-                status = true;                 // 전송 완료되었으므로 status를 true로 바꿈.
-            }
->>>>>>> origin/hotfix
-        }
-        catch (RuntimeException e)
-        {
+        } catch (RuntimeException e) {
             throw e;
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             SMTPLOG.info("sendMessage() error: " + ex);
         }
         return status;
     }  // sendMessage()
 
-    public boolean sendMessageMe() throws NoSuchFileException, DirectoryNotEmptyException, IOException 
-    {
+    public boolean sendMessageMe() throws NoSuchFileException, DirectoryNotEmptyException, IOException {
         boolean status = false;           // 현재 전송되지 않았음을 나타내기 위해 false, 전송시 status가 true가 됨.
         // 1. property 설정
         Properties props = System.getProperties();
@@ -194,17 +190,14 @@ public class SmtpAgent {
         Session session = Session.getDefaultInstance(props, null);
         session.setDebug(false);
 
-        try
-        {
+        try {
             SMTPMessage msg = new SMTPMessage(session);
 
             msg.setFrom(new InternetAddress(this.userid));  // 200102 LJM - 테스트 목적으로 수정
             msg.setRecipients(Message.RecipientType.TO, this.userid);  // 200102 LJM - 수정
 
-            if (this.cc.length() > 1) 
-            {
-                if (this.cc.indexOf(';') != -1)
-                {
+            if (this.cc.length() > 1) {
+                if (this.cc.indexOf(';') != -1) {
                     this.cc = this.cc.replace(";", ",");
                 }
                 msg.setRecipients(Message.RecipientType.CC, this.cc);
@@ -217,7 +210,7 @@ public class SmtpAgent {
             Multipart mp = new MimeMultipart();
             mp.addBodyPart(mbp);
 
-            if (this.file1 != null)           // 첨부 파일의 존재가 확인되면
+            if (this.file1 != null) // 첨부 파일의 존재가 확인되면
             {
                 MimeBodyPart a1 = new MimeBodyPart();
                 DataSource src = new FileDataSource(this.file1);
@@ -230,22 +223,18 @@ public class SmtpAgent {
             msg.setContent(mp);
             Transport.send(msg);
 
-            if (this.file1 != null)           // 첨부 파일의 존재가 확인되면
+            if (this.file1 != null) // 첨부 파일의 존재가 확인되면
             {
-                Files.delete(this.file1); //S4042
-
+                File f = new File(this.file1);
+                f.delete();
             }
             status = true;                 // 전송 완료되었으므로 status를 true로 바꿈.
-        }
-        catch (RuntimeException e)
-        {
+        } catch (RuntimeException e) {
             throw e;
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             SMTPLOG.info("sendMessage_me() error: " + ex);
         }
-        
+
         return status;
     }  // sendMessageMe()
 

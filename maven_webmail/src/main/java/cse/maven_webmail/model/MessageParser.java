@@ -34,11 +34,7 @@ public class MessageParser {
     private String fileName;
     private String downloadTempDir = "C:/temp/download/";
     private String userid;
-<<<<<<< HEAD
     private Log log = null;
-=======
-    Log log = LogFactory.getLog(MessageParser.class);
->>>>>>> origin/hotfix
 
     public MessageParser(Message message, String userid) {
         this.message = message;
@@ -98,11 +94,8 @@ public class MessageParser {
                 || disp.equalsIgnoreCase(Part.INLINE))) {  // 첨부 파일
             fileName = MimeUtility.decodeText(p.getFileName());
             if (fileName != null) {
-<<<<<<< HEAD
                 log.info("MessageParser.getPart() : file = " + fileName); // S106
-=======
                 log.error("MessageParser.getPart() : file = " + fileName); // S106
->>>>>>> origin/hotfix
                 // 첨부 파일을 서버의 내려받기 임시 저장소에 저장
                 String tempUserDir = this.downloadTempDir + File.separator + this.userid;
                 File dir = new File(tempUserDir);

@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context path="/maven_webmail">
-     <Resource auth = "Container" driverClassName="com.mysql.cj.jdbc.Driver"
-        maxIdle="2" matToatl="8" maxWaitMillis="5000" name="jdbc/AddrBookDB"
-        username="webmailuser" password="12345" type="javax.sql.DataSource"
-        url="jdbc:mysql://113.198.235.241:3192/web-mailsystem?serverTimezone=Asia/Seoul"/>
+    <Resource auth = "Container" driverClassName="com.mysql.cj.jdbc.Driver"
+               maxIdle="2" matToatl="8" maxWaitMillis="5000" name="jdbc/AddrBookDB"
+               username="webmailuser" password="12345" type="javax.sql.DataSource"
+               url="jdbc:mysql://113.198.235.241:3192/web-mailsystem?serverTimezone=Asia/Seoul"/>
     
-        <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver"
-        maxIdle="2" maxTotal="8" maxWaitMillis="5000" name="jdbc/passwd_reset"
-        
-        username="webmailuser" password="12345" type="javax.sql.DataSource"
-        url="jdbc:mysql://113.198.235.241:3192/web-mailsystem?serverTimezone=Asia/Seoul"/>
-        <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver"
-
-        maxIdle="2" maxTotal="8" maxWaitMillis="5000" name="jdbc/fakeletter"        
-        username="webmailuser" password="12345" type="javax.sql.DataSource"
-        url="jdbc:mysql://113.198.235.241:3192/web-mailsystem?serverTimezone=Asia/Seoul"/>
+    <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver"
+                  maxIdle="2" maxTotal="8" maxWaitMillis="5000" name="jdbc/fakeletter"        
+                  username="webmailuser" password="12345" type="javax.sql.DataSource"
+                  url="jdbc:mysql://113.198.235.241:3192/web-mailsystem?serverTimezone=Asia/Seoul"/>
+    <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver"
+                  maxIdle="2" maxTotal="8" maxWaitMillis="5000" name="jdbc/user_register"        
+                  username="webmailuser" password="12345" type="javax.sql.DataSource"
+                  url="jdbc:mysql://113.198.235.241:3192/web-mailsystem?serverTimezone=Asia/Seoul"/>
 </Context>

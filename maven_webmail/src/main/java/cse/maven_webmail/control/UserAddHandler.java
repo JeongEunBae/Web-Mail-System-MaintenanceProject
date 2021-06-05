@@ -65,22 +65,18 @@ public class UserAddHandler extends HttpServlet {
     private void adduser(HttpServletRequest request, PrintWriter out) { // S1172          
                 
         try {
-        
-            //S125
+            String username = ""; // 데이터베이스의 이름 가져오기
+            String name = "java:/comp/env/jdbc/user_register";
+            javax.naming.Context ctx = new javax.naming.InitialContext();
+            javax.sql.DataSource ds = (javax.sql.DataSource) ctx.lookup(name);
             
-            final String className = "com.mysql.cj.jdbc.Driver";
-            Class.forName(className);
-            final String url = "jdbc:mysql://113.198.235.241:3192/web-mailsystem?zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=Asia/Seoul";
-            final String User = "webmailuser";
-            final String Password = "12345";
-
             String registerId = request.getParameter("register_id");
             String registerPW = request.getParameter("register_pw_check");
             String registerName = request.getParameter("register_name");
             String registerNumber = request.getParameter("register_number");
             int reqCK = 0;
             
-            conn = DriverManager.getConnection(url, User, Password);
+            conn = ds.getConnection();
             
             String sql = "INSERT INTO user_register VALUES(?,?,?,?,?)";
             
@@ -97,11 +93,13 @@ public class UserAddHandler extends HttpServlet {
             if (queryState >= 1) {
                 StringBuilder popup = new StringBuilder();
                 popup.append("<script>alert('회원가입 완료 승인대기중'); location.href='register_wait.jsp';</script>");
+                out.println(popup);
                 String popupLog = popup.toString();
                 log.info(popupLog);
             } else {
                 StringBuilder popup = new StringBuilder();
                 popup.append("<script>alert('서버 상태를 확인하세요.'); window.history.back();</script>");
+                out.println(popup);
                 String popupLog = popup.toString();
                 log.info(popupLog);
             }

@@ -13,6 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import cse.maven_webmail.model.FormParser;
 import cse.maven_webmail.model.SmtpAgent;
+import java.io.UnsupportedEncodingException;
+import java.nio.file.DirectoryNotEmptyException;
+import javax.mail.MessagingException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -79,70 +82,79 @@ public class WriteMailHandler extends HttpServlet
     private boolean sendMessage(HttpServletRequest request)
     {
         boolean status = false;
-
-        // 1. toAddress, ccAddress, subject, body, file1 정보를 파싱하여 추출
-        FormParser parser = new FormParser(request);              
-        parser.parse();
-
-        // 2.  request 객체에서 HttpSession 객체 얻기
-        HttpSession session = (HttpSession) request.getSession();
-
-        // 3. HttpSession 객체에서 메일 서버, 메일 사용자 ID 정보 얻기
-        String host = (String) session.getAttribute("host");
-        String userid = (String) session.getAttribute("userid");
-
-        // 4. SmtpAgent 객체에 메일 관련 정보 설정
-        SmtpAgent agent = new SmtpAgent(host, userid);
-        agent.setTo(parser.getToAddress());
-        agent.setCc(parser.getCcAddress());
-        agent.setSubj(parser.getSubject());
-        agent.setBody(parser.getBody());
-        String fileName = parser.getFileName();
-        log.info("WriteMailHandler.sendMessage() : fileName = " + fileName); // S106
-        if (fileName != null)
-        {
-            agent.setFile1(fileName);
+        try {
+            
+            // 1. toAddress, ccAddress, subject, body, file1 정보를 파싱하여 추출
+            FormParser parser = new FormParser(request);
+            parser.parse();
+            
+            // 2.  request 객체에서 HttpSession 객체 얻기
+            HttpSession session = (HttpSession) request.getSession();
+            
+            // 3. HttpSession 객체에서 메일 서버, 메일 사용자 ID 정보 얻기
+            String host = (String) session.getAttribute("host");
+            String userid = (String) session.getAttribute("userid");
+            
+            // 4. SmtpAgent 객체에 메일 관련 정보 설정
+            SmtpAgent agent = new SmtpAgent(host, userid);
+            agent.setTo(parser.getToAddress());
+            agent.setCc(parser.getCcAddress());
+            agent.setSubj(parser.getSubject());
+            agent.setBody(parser.getBody());
+            String fileName = parser.getFileName();
+            log.info("WriteMailHandler.sendMessage() : fileName = " + fileName); // S106
+            if (fileName != null)
+            {
+                agent.setFile1(fileName);
+            }
+            // 5. 메일 전송 권한 위임
+            
+            if (agent.sendMessage())
+            {
+                status = true;
+            }
+        } // sendMessage()
+        catch (Exception ex) {
+            log.error(ex);
         }
-        // 5. 메일 전송 권한 위임
-        
-        if (agent.sendMessage()) 
-        {
-            status = true;
-        } 
-        
         return status;
-    }  // sendMessage()
+    }
     
     private boolean sendMessageMe(HttpServletRequest request)
     {
         boolean status = false;
-
-        // 1. ccAddress, subject, body, file1 정보를 파싱하여 추출
-        FormParser parser2 = new FormParser(request);              // 내게 메일 쓰기에는 to 정보가 없기 때문에 수정 필요함
-        parser2.parse();
-        HttpSession session = (HttpSession) request.getSession();
-        String host = (String) session.getAttribute("host");
-        String userid = (String) session.getAttribute("userid");
-        
-        SmtpAgent agent2 = new SmtpAgent(host, userid);
-        agent2.setCc(parser2.getCcAddress());
-        agent2.setSubj(parser2.getSubject());
-        agent2.setBody(parser2.getBody());
-        String fileName = parser2.getFileName();
-        log.info("WriteMailHandler.sendMessage() : fileName = " + fileName);
-        if (fileName != null)
-        {
-            agent2.setFile1(fileName);
+        try {
+            // 1. ccAddress, subject, body, file1 정보를 파싱하여 추출
+            FormParser parser2 = new FormParser(request);              // 내게 메일 쓰기에는 to 정보가 없기 때문에 수정 필요함
+            parser2.parse();
+            HttpSession session = (HttpSession) request.getSession();
+            String host = (String) session.getAttribute("host");
+            String userid = (String) session.getAttribute("userid");
+            
+            SmtpAgent agent2 = new SmtpAgent(host, userid);
+            agent2.setCc(parser2.getCcAddress());
+            agent2.setSubj(parser2.getSubject());
+            agent2.setBody(parser2.getBody());
+            String fileName = parser2.getFileName();
+            log.info("WriteMailHandler.sendMessage() : fileName = " + fileName);
+            if (fileName != null)
+            {
+                agent2.setFile1(fileName);
+            }
+            // 5. 메일 전송 권한 위임
+            
+            if (agent2.sendMessageMe())
+            {
+                status = true;
+            }
+            
+            return status;
+        } // sendMessage()
+        catch (Exception ex) {
+            log.error(ex);
         }
-        // 5. 메일 전송 권한 위임
-
-        if (agent2.sendMessageMe()) 
-        {
-            status = true;
-        }
-        
         return status;
-    }  // sendMessage()
+    }
 
     private String getMailTransportPopUp(boolean success)
     {

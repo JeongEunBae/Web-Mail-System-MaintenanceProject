@@ -82,8 +82,8 @@
         <res-sharing-scope>Shareable</res-sharing-scope>
     </resource-ref>
     <resource-ref>
-        <description>web-mailsystem passwd_reset</description>
-        <res-ref-name>jdbc/passwd_reset</res-ref-name>
+        <description>web-mailsystem user_register</description>
+        <res-ref-name>jdbc/user_register</res-ref-name>
         <res-type>javax.sql.DataSource</res-type>
         <res-auth>Container</res-auth>
         <res-sharing-scope>Shareable</res-sharing-scope>

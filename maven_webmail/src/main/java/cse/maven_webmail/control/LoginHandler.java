@@ -34,6 +34,7 @@ public class LoginHandler extends HttpServlet {
     private static final String ADMINISTRATOR = "admin";
     private static final String USERID = "userid";
     private static final String PASSWD = "passwd";
+    private Log log = LogFactory.getLog(LoginHandler.class);
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -58,6 +59,7 @@ public class LoginHandler extends HttpServlet {
 
                     // Now call the correct page according to its validation result.
                     if (isLoginSuccess) {
+                        log.info("LoginSuccess");
                         if (isAdmin(userid)) {
                             // HttpSession 객체에 userid를 등록해 둔다.
                             session.setAttribute(USERID, userid);
@@ -82,7 +84,6 @@ public class LoginHandler extends HttpServlet {
                     break;
             }
         } catch (Exception ex) {
-            Log log = LogFactory.getLog(LoginHandler.class);
             log.error("LoginCheck - LOGIN error: " + ex);
         } finally {
             out.close();

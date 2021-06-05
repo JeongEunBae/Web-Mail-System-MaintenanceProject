@@ -19,8 +19,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.annotation.WebServlet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -147,7 +145,6 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response )
         try {
             processRequest(request, response);
         } catch (SQLException ex) {
-            Logger.getLogger(UserAccept.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -165,7 +162,6 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
         try {
             processRequest(request, response);
         } catch (SQLException ex) {
-            Logger.getLogger(UserAccept.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
