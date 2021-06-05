@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * 책임: enctype이 multipart/form-data인 HTML 폼에 있는 각 필드와 파일 정보 추출
@@ -26,6 +28,7 @@ public class FormParser {
     private String body = null;
     private String fileName = null;
     private String uploadTargetDir = "C:/temp/upload";
+    Log log = LogFactory.getLog(FormParser.class);
 
     public FormParser(HttpServletRequest request) {
         this.request = request;
@@ -120,7 +123,7 @@ public class FormParser {
                 } else {  // 6. 첨부 파일 처리
                     if (!(fi.getName() == null || fi.getName().equals(""))) {
                         String fieldName = fi.getFieldName();
-                        out.println("ATTACHED FILE : " + fieldName + " = " + fi.getName()); //S106
+                        log.info("ATTACHED FILE : " + fieldName + " = " + fi.getName()); //S106
 
                         // 절대 경로 저장
                         setFileName(uploadTargetDir + "/" + fi.getName());
@@ -133,7 +136,7 @@ public class FormParser {
                 }
             }
         } catch (Exception ex) {
-            out.println("FormParser.parse() : exception = " + ex); //S106
+            log.error("FormParser.parse() : exception = " + ex); //S106
         }
     }  // parse()
 }

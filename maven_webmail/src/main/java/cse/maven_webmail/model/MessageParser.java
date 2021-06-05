@@ -6,13 +6,17 @@ package cse.maven_webmail.model;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import static java.lang.System.out;
 import javax.activation.DataHandler;
 import javax.mail.Address;
 import javax.mail.Message;
+import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.Part;
 import javax.mail.internet.MimeUtility;
 import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  *
@@ -30,6 +34,7 @@ public class MessageParser {
     private String fileName;
     private String downloadTempDir = "C:/temp/download/";
     private String userid;
+    Log log = LogFactory.getLog(MessageParser.class);
 
     public MessageParser(Message message, String userid) {
         this.message = message;
@@ -61,13 +66,13 @@ public class MessageParser {
             status = true;
             return status; // ADD JEONGEUN
         } catch (Exception ex) {
-            out.println("MessageParser.parse() - Exception : " + ex); // S106
+            log.error("MessageParser.parse() - Exception : " + ex); // S106
             status = false;
             return status; // ADD JEONGEUN
         }
     }
 
-    private void getEnvelope(){ // S112 // S1172
+    private void getEnvelope(Message message) throws MessagingException{ // S112 // S1172
         fromAddress = message.getFrom()[0].toString();  // 101122 LJM : replaces getMyFrom2()
         toAddress = getAddresses(message.getRecipients(Message.RecipientType.TO));
         Address[] addr = message.getRecipients(Message.RecipientType.CC);
@@ -88,7 +93,7 @@ public class MessageParser {
                 || disp.equalsIgnoreCase(Part.INLINE))) {  // 첨부 파일
             fileName = MimeUtility.decodeText(p.getFileName());
             if (fileName != null) {
-                out.println("MessageParser.getPart() : file = " + fileName); // S106
+                log.error("MessageParser.getPart() : file = " + fileName); // S106
                 // 첨부 파일을 서버의 내려받기 임시 저장소에 저장
                 String tempUserDir = this.downloadTempDir + File.separator + this.userid;
                 File dir = new File(tempUserDir);

@@ -34,6 +34,7 @@ public class UserAddHandler extends HttpServlet {
 
     Connection conn = null;
     PreparedStatement pstmt = null;
+    Log log = LogFactory.getLog(UserAddHandler.class);
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -53,7 +54,7 @@ public class UserAddHandler extends HttpServlet {
             int select = Integer.parseInt((String) request.getParameter("menu"));
 
             if (select == CommandType.ADD_USER_COMMAND) {
-                adduser(request, response, out);
+                adduser(request, out);
             }
         } catch (Exception ex) {
              Log log = LogFactory.getLog(UserAddHandler.class); 
@@ -96,11 +97,13 @@ public class UserAddHandler extends HttpServlet {
             if (queryState >= 1) {
                 StringBuilder popup = new StringBuilder();
                 popup.append("<script>alert('회원가입 완료 승인대기중'); location.href='register_wait.jsp';</script>");
-                out.println(Popup.toString());
+                String popupLog = popup.toString();
+                log.info(popupLog);
             } else {
                 StringBuilder popup = new StringBuilder();
                 popup.append("<script>alert('서버 상태를 확인하세요.'); window.history.back();</script>");
-                out.println(popup.toString());
+                String popupLog = popup.toString();
+                log.info(popupLog);
             }
             pstmt.close();
             conn.close();

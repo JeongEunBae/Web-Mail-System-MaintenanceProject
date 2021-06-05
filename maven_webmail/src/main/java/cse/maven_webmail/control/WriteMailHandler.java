@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import cse.maven_webmail.model.FormParser;
 import cse.maven_webmail.model.SmtpAgent;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  *
@@ -31,6 +33,8 @@ public class WriteMailHandler extends HttpServlet
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    Log log = LogFactory.getLog(WriteMailHandler.class);
+    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException 
     {
@@ -46,25 +50,25 @@ public class WriteMailHandler extends HttpServlet
                 case CommandType.SEND_MAIL_COMMAND: // 상대방에게 전송
                     out = response.getWriter();
                     status = sendMessage(request);
-                    out.print(getMailTransportPopUp(status));
+                    log.info(getMailTransportPopUp(status));
                     break;
                     
                 case CommandType.SEND_MAIL_COMMAND_ME: // 내게 전송
                     out = response.getWriter();
                     status = sendMessageMe(request);
-                    out.print(getMailTransportPopUp(status));
+                    log.info(getMailTransportPopUp(status));
                     break;
 
                 default:
                     out = response.getWriter();
-                    out.println("없는 메뉴를 선택하셨습니다. 어떻게 이 곳에 들어오셨나요?");
+                    log.error("없는 메뉴를 선택하셨습니다. 어떻게 이 곳에 들어오셨나요?");
                     break;
             }
         }
         catch (Exception ex)
         {
             if(out != null)
-                out.println(ex.toString());
+                log.error(ex.toString());
         } finally
         {
             if(out != null)
@@ -94,7 +98,7 @@ public class WriteMailHandler extends HttpServlet
         agent.setSubj(parser.getSubject());
         agent.setBody(parser.getBody());
         String fileName = parser.getFileName();
-        out.println("WriteMailHandler.sendMessage() : fileName = " + fileName); // S106
+        log.info("WriteMailHandler.sendMessage() : fileName = " + fileName); // S106
         if (fileName != null)
         {
             agent.setFile1(fileName);
@@ -125,7 +129,7 @@ public class WriteMailHandler extends HttpServlet
         agent2.setSubj(parser2.getSubject());
         agent2.setBody(parser2.getBody());
         String fileName = parser2.getFileName();
-        out.println("WriteMailHandler.sendMessage() : fileName = " + fileName);
+        log.info("WriteMailHandler.sendMessage() : fileName = " + fileName);
         if (fileName != null)
         {
             agent2.setFile1(fileName);

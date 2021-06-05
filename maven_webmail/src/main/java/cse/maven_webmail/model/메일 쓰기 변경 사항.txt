@@ -1,2 +1,0 @@
-CommandType.java 에 public final static int SEND_MAIL_COMMAND_ME = 22; 추가
-

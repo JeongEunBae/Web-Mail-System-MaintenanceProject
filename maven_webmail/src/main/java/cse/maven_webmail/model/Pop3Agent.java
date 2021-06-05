@@ -19,6 +19,8 @@ import javax.mail.Session;
 import javax.mail.Store;
 import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 
 
@@ -36,7 +38,7 @@ public class Pop3Agent {
     private static final String NAME = "java:/comp/env/jdbc/fakeletter"; //S115
     private List<Integer> fake_num_list = new ArrayList<>();
     // S1068
-
+    Log log = LogFactory.getLog(Pop3Agent.class);
     private static final String FOLDER_NAME = "INBOX"; // ADD JEONGEUN
     //private static Logger logger = LoggerFactory.getLogger(Pop3Agent.class);// ADD JEONGEUN
 
@@ -61,7 +63,7 @@ public class Pop3Agent {
             return status; // ADD JEONGEUN
         } catch (Exception ex) {
             //logger.trace("Pop3Agent.validate() error : " + ex); // MODIFY JEONGEUN
-            out.println("Pop3Agent.validate() error : " + ex); // S106
+            log.error("Pop3Agent.validate() error : " + ex); // S106
             status = false;  // for clarity
             return status; // ADD JEONGEUN
         }
@@ -69,7 +71,7 @@ public class Pop3Agent {
 
 
     public boolean deleteMessage(int msgid, boolean reallyDelete) { // MODIFY JEONGEUN
-        out.println("======================deleteMessage===================="); // S106
+        log.trace("======================deleteMessage===================="); // S106
 
         boolean status = false;
 
@@ -78,10 +80,10 @@ public class Pop3Agent {
         }
         try {
             if(!getListFromDB()){
-                out.println("deleteMessage DB");
+                log.error("deleteMessage DB");
             }
         } catch (SQLException ex) { // 
-            out.println("deleteMessage() error: " + ex);
+            log.error("deleteMessage() error: " + ex);
         }
 
         // 가져온 임시 삭제된 메시지 리스트의 msgid-1 번째 있는 메시지가 삭제할 msgid.
@@ -92,9 +94,9 @@ public class Pop3Agent {
         try {
             saveListToDB();
         } catch (SQLException ex) {
-            out.println("deleteMessage() error: " + ex);
+            log.error("deleteMessage() error: " + ex);
         }
-        out.println(realMsgid);
+        log.info(realMsgid);
         try {
             // Folder 설정
             Folder folder = store.getFolder(FOLDER_NAME); // ADD JEONGEUN
@@ -113,13 +115,13 @@ public class Pop3Agent {
             return status; // ADD JEONGEUN
         } catch (Exception ex) {
 //            logger.trace("deleteMessage() error: " + ex); // MODIFY JEONGEUN
-            out.println("Pop3Agent.getMessageList() : exception = " + ex); 
+            log.error("Pop3Agent.getMessageList() : exception = " + ex); 
             return status;
         }
     }
     
     public boolean deleteMessageFake(int msgid){
-        out.println("======================deleteMessageFake====================");
+        log.trace("======================deleteMessageFake====================");
         boolean status = false;
         
         if (!connectToStore()) {
@@ -127,16 +129,16 @@ public class Pop3Agent {
         }
         try {
             if (!getListFromDB()){
-                out.println("db 오류");
+                log.error("db 오류");
             }
         } catch (SQLException ex) {
-            out.println(ex.getStackTrace());
+            log.error(ex.getStackTrace());
         }
         
         int messageCount = fake_num_list.size();
         
-        out.print("messageCount: ");
-        out.println(fake_num_list.size());
+        log.info("messageCount: ");
+        log.info(fake_num_list.size());
         
         // 가져온 메시지의 개수가 30개면 가장 앞 번호의 메시지 영구 삭제.
         // TODO
@@ -157,12 +159,12 @@ public class Pop3Agent {
         fake_num_list.add(msgid+count-1);
         try{
             if(!saveListToDB()){
-                out.println("db 오류");
+                log.error("db 오류");
             }
         } catch (SQLException ex){
-            out.println("deleteMessageFake's saveListToDB StackTrace: ");
-            out.println(ex.getStackTrace());
-            out.println("Pop3Agent.getMessageList() : exception = " + ex);
+            log.error("deleteMessageFake's saveListToDB StackTrace: ");
+            log.error(ex.getStackTrace());
+            log.error("Pop3Agent.getMessageList() : exception = " + ex);
         }
         status = true;
         return status;
@@ -182,10 +184,10 @@ public class Pop3Agent {
 
         try {
             if(!getListFromDB()){
-                out.println("DB연결 오류");
+                log.error("DB연결 오류");
             }
         } catch (Exception e) {
-            out.println(e.getStackTrace());
+            log.error(e.getStackTrace());
         }
         try {
             // 메일 폴더 열기
@@ -196,8 +198,8 @@ public class Pop3Agent {
             messages = folder.getMessages();      // 3.4
             
             for(Message msg : messages){
-                out.print("msg.getMessageNumber(): ");
-                out.println(msg.getMessageNumber());s
+                log.info("msg.getMessageNumber(): ");
+                log.info(msg.getMessageNumber());
             }
             int size = messages.length;
             Message[] tmp_messages = new Message[size-fake_num_list.size()];
@@ -218,8 +220,8 @@ public class Pop3Agent {
                 }
             }
             
-            out.print("----------------------걸러낼 목록: ");
-            out.println(temp);
+            log.info("----------------------걸러낼 목록: ");
+            log.info(temp);
             
             FetchProfile fp = new FetchProfile();
             // From, To, Cc, Bcc, ReplyTo, Subject & Date
@@ -306,22 +308,20 @@ public class Pop3Agent {
         }
     }
     
-    public String getTrashMessageList(){
+    public String getTrashMessageList() throws SQLException{
         String result = "POP3  서버 연결이 되지 않아 메시지를 볼 수 없습니다.";
         
         if (!connectToStore()) {
-            err.println("POP3 connection failed!");
+            log.error("POP3 connection failed!");
             return result;
         }
         
-        try {
-            if(!getListFromDB()){
+        if(!getListFromDB()){
                 return "DB 서버 연결이 되지 않아 메시지를 볼 수 없습니다.";
-            }
-        } 
+        }
             
         int numListCount = fake_num_list.size();       //임시로 삭제된 메일번호 목록의 개수
-        out.println(numListCount);
+        log.info(numListCount);
         Message[] messages = new Message[numListCount];
         
         try{
@@ -329,7 +329,7 @@ public class Pop3Agent {
             folder.open(Folder.READ_ONLY);
             
             for(int i=0; i<numListCount; i++){
-                out.println(fake_num_list.get(i)+1);
+                log.info(fake_num_list.get(i)+1);
                 messages[i] = folder.getMessage(fake_num_list.get(i)+1);
             }
             
@@ -344,7 +344,7 @@ public class Pop3Agent {
             folder.close(true);  // 3.7
             store.close();       // 3.8
         } catch(Exception ex){
-            out.println("Pop3Agent.getTrashMessageList() : exception = " + ex);
+            log.error("Pop3Agent.getTrashMessageList() : exception = " + ex);
             result = "Pop3Agent.getTrashMessageList() : exception = " + ex;
         }
         return result;
@@ -373,7 +373,7 @@ public class Pop3Agent {
     }
     
     private boolean getListFromDB() throws SQLException{
-        out.println("=============getListFromDB===========");
+        log.info("=============getListFromDB===========");
         boolean status = false;
         //TODO
         Connection conn = null;
@@ -386,44 +386,44 @@ public class Pop3Agent {
             conn = ds.getConnection();
             stmt = conn.createStatement();
             String sql = "SELECT list FROM fakeletter WHERE id=\'" + userid + "\'";
-            out.println("sql: " + sql);
+            log.info("sql: " + sql);
             rs = stmt.executeQuery(sql);
             
             String list="";
             while(rs.next()){
                 list = rs.getString("list");
-                out.println(list);
+                log.info(list);
             }
             list = list.replace("[", "");
             list = list.replace("]", "");
             for(String str : list.split(", ")){
-                out.println(str);
+                log.info(str);
                 fake_num_list.add(Integer.parseInt(str));
             }
-            out.println(fake_num_list);
+            log.info(fake_num_list);
             status = true;
 
             rs.close(); // S2095
             stmt.close();
             conn.close();
         } catch(Exception e) {
-            println(e.getStackTrace());
+            log.error(e.getStackTrace());
         }
         
-        out.println("-----------getListFromDB--------------------");
+        log.info("-----------getListFromDB--------------------");
         return status;
     }
     
     private boolean saveListToDB() throws SQLException{
-        out.println("=============saveListToDB===========");
+        log.trace("=============saveListToDB===========");
         boolean status = false;
         Connection conn = null;
         PreparedStatement pstmt = null;
         fake_num_list.sort(Comparator.naturalOrder());
         String list = fake_num_list.toString().replace("[^0-9,]", "");
-        out.print("fake_num_list: ");
-        out.println(fake_num_list);
-        out.println("list: " + list);
+        log.info("fake_num_list: ");
+        log.info(fake_num_list);
+        log.info("list: " + list);
         
         
         try{
@@ -435,18 +435,18 @@ public class Pop3Agent {
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, list);
             pstmt.setString(2, userid);
-            out.println("sql: " + sql);
+            log.info("sql: " + sql);
             pstmt.executeUpdate();
             status = true;
         } catch(Exception e) {
-            out.println(e.getStackTrace());
+            log.error(e.getStackTrace());
         } finally {
             if(pstmt != null)
                 pstmt.close();
             if(conn != null)
                 conn.close();
         }
-        out.println("--------------saveListToDB--------------");
+        log.info("--------------saveListToDB--------------");
         return status;
     }
     

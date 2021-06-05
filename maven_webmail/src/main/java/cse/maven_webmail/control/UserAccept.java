@@ -42,6 +42,7 @@ public class UserAccept extends HttpServlet {
     ResultSet rs =null;
     ResultSet rs_2 = null;
     int query_state = 0;
+    Log log = LogFactory.getLog(UserAccept.class);
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -96,20 +97,20 @@ public class UserAccept extends HttpServlet {
                     
                     if(rs.getString("id")!=null && rs.getString("id").equals(change_id)){ // 여기가 입력받은 id값이랑 SQL커서값 동일한 id인지 확인.
 
-                        PrintWriter out = response.getWriter()
+                        PrintWriter out = response.getWriter();
                         UserAdminAgent agent = new UserAdminAgent(server, port, this.getServletContext().getRealPath("."));
                         String userid = rs.getString("id"); 
                         String password = rs.getString("pw");
-                        out.println("userid = " + userid + "<br>");
-                        out.println("password = " + password + "<br>");
-                        out.println("회원가입 승인 성공!! 뒤로가기를 눌러주세요.");
+                        log.info("userid = " + userid + "<br>");
+                        log.info("password = " + password + "<br>");
+                        log.info("회원가입 승인 성공!! 뒤로가기를 눌러주세요.");
                         out.flush();
                         if(agent.addUser(userid, password)) {
                            Popup.append("<script>alert('사용자 인증을 완료했습니다.'); location.href='UserStateChange.jsp;</script>");
-                           out.println(Popup.toString());
+                           log.info(Popup.toString());
                         } else {
                             Popup.append("<script>alert('사용자 등록에 실패했습니다.'); location.href='UserStateChange.jsp;</script>");
-                            out.println(Popup.toString());
+                            log.error(Popup.toString());
                         }
                         out.flush();
                             

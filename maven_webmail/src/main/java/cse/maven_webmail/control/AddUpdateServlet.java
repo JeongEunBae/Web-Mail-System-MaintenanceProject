@@ -11,6 +11,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import javax.servlet.ServletException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,16 +33,19 @@ public class AddUpdateServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    
+    Log log = LogFactory.getLog(AddUpdateServlet.class);
+    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException, ClassNotFoundException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
+        final String JdbcDriver = "com.mysql.jdbc.Driver";
+        final String JdbcUrl = "jdbc:mysql://113.198.235.241:3192/web-mailsystem";
+        final String User = "webmailuser";
+        final String password = "12345";
+        
         try {
-            final String JdbcDriver = "com.mysql.jdbc.Driver";
-            final String JdbcUrl = "jdbc:mysql://113.198.235.241:3192/web-mailsystem";
-            final String User = "webmailuser";
-            final String password = "12345";
-
             Class.forName(JdbcDriver); // JDBC 드라이버 적재
 
             // Connection 객체 생성
@@ -75,12 +80,9 @@ public class AddUpdateServlet extends HttpServlet {
 
             } catch (Exception ex) {
 
-                out.println("오류가 발생했습니다.(발생 오류 : " + ex.getMessage() + ")");
-                out.println("<br/> <a href=\"addrbook_list.jsp\">초기 화면으로 가기</a>");
-                out.println("TEST >> " + request.getParameter("idx"));
-            }finally {
-                pstmt.close();
-                conn.close();
+                log.error("오류가 발생했습니다.(발생 오류 : " + ex.getMessage() + ")");
+                log.error("<br/> <a href=\"addrbook_list.jsp\">초기 화면으로 가기</a>");
+                log.error("TEST >> " + request.getParameter("idx"));
             }
         } finally {
             out.close();
@@ -99,7 +101,11 @@ public class AddUpdateServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (ClassNotFoundException ex) {
+            log.error(AddUpdateServlet.class.getName() + ex);
+        }
     }
 
     /**
@@ -113,7 +119,11 @@ public class AddUpdateServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (ClassNotFoundException ex) {
+            log.error(AddUpdateServlet.class.getName() + ex);
+        }
     }
 
     /**

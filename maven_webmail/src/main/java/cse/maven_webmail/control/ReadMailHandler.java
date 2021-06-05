@@ -12,6 +12,8 @@ import java.net.URLEncoder;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -24,8 +26,7 @@ import cse.maven_webmail.model.Pop3Agent;
  */
 public class ReadMailHandler extends HttpServlet {
     private static final String CHARACTER_ENCODING_SET = "UTF-8"; // ADD JEONGEUN
-
-    private static Logger logger = LoggerFactory.getLogger(ReadMailHandler.class);// ADD JEONGEUN
+    Log log = LogFactory.getLog(ReadMailHandler.class);
     private static final String USER_ID = "userid"; // S1192
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -78,7 +79,7 @@ public class ReadMailHandler extends HttpServlet {
             request.setCharacterEncoding(CHARACTER_ENCODING_SET); // ADD JEONGEUN
             // LJM 041203 - 아래와 같이 해서 한글파일명 제대로 인식되는 것 확인했음.
             String fileName = request.getParameter("filename");
-            logger.trace(">>>>>> DOWNLOAD: file name = " + fileName); // ADD JEONGEUN
+            log.trace(">>>>>> DOWNLOAD: file name = " + fileName); // ADD JEONGEUN
             String userid = request.getParameter(USER_ID);  // S1192
 
             // download할 파일 읽기
@@ -112,12 +113,12 @@ public class ReadMailHandler extends HttpServlet {
             sos.flush();
             sos.close();
         } catch (Exception ex) {
-            logger.trace("====== DOWNLOAD exception : " + ex); // ADD JEONGEUN
+            log.error("====== DOWNLOAD exception : " + ex); // ADD JEONGEUN
         }
     }
 
     private boolean deleteMessage(HttpServletRequest request) {
-        logger.trace("=============deleteMessage===========");
+        log.trace("=============deleteMessage===========");
         int msgid = Integer.parseInt((String) request.getParameter("msgid"));
         HttpSession httpSession = request.getSession();
         String host = (String) httpSession.getAttribute("host");
@@ -132,7 +133,7 @@ public class ReadMailHandler extends HttpServlet {
 
     
     private boolean deleteTempMessage(HttpServletRequest request) {
-        logger.trace("=============deleteTempMessage===========");
+        log.trace("=============deleteTempMessage===========");
         int msgid = Integer.parseInt((String) request.getParameter("msgid"));
         HttpSession httpSession = request.getSession();
         String host = (String) httpSession.getAttribute("host");

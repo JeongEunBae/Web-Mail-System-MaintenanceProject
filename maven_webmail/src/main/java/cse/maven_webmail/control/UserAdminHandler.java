@@ -47,11 +47,11 @@ public class UserAdminHandler extends HttpServlet {
 
                 switch (select) {
                     case CommandType.ADD_USER_COMMAND:
-                        addUser(request, response, out);
+                        addUser(request, out);
                         break;
 
                     case CommandType.DELETE_USER_COMMAND:
-                        deleteUser(request, response, out);
+                        deleteUser(request, response);
                         break;
 
                     default:
